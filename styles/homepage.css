@@ -9,19 +9,24 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: calc(100vh - 28px);
+  height: calc(100vh - clamp(28px, 2vw, 50px));
+}
+
+.logo {
+  width: clamp(277px, 20vw, 500px);
+  height: clamp(51px, 3.64vw, 93px);
 }
 
 .main-screen-content {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: clamp(10px, 0.7vw, 18px);
 }
 
 .main-screen-list {
   font-family: var(--font-arial);
-  font-size: 14px;
-  line-height: 15.6px;
+  font-size: clamp(14px, 1vw, 25px);
+  line-height: 111%;
   font-weight: bold;
   color: var(--color-light);
 }
