@@ -1,0 +1,27 @@
+body {
+  width: 100vw;
+  height: 100vh;
+}
+
+.main-screen {
+  background-color: #2d2c2c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: calc(100vh - 28px);
+}
+
+.main-screen-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.main-screen-list {
+  font-family: var(--font-arial);
+  font-size: 14px;
+  line-height: 15.6px;
+  font-weight: bold;
+  color: var(--color-light);
+}
