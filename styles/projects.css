@@ -4,8 +4,11 @@ body {
   padding-top: clamp(22px, 1.528vw, 39.11px);
   font-family: var(--font-arial);
   display: flex;
-
   flex-direction: column;
+}
+
+body.noscroll {
+  overflow: hidden;
 }
 
 .header {

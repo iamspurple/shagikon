@@ -101,21 +101,25 @@ const initMenu = () => {
   openSidebar.addEventListener("click", () => {
     openSidebar.classList.add("active");
     sidebar.classList.add("active");
+    document.body.classList.add("noscroll");
   });
 
   closeSidebar.addEventListener("click", () => {
     openSidebar.classList.remove("active");
     sidebar.classList.remove("active");
+    document.body.classList.remove("noscroll");
   });
 
   openFilters.addEventListener("click", () => {
     openFilters.classList.add("active");
     filters.classList.add("active");
+    document.body.classList.add("noscroll");
   });
 
   closeFilters.addEventListener("click", () => {
     openFilters.classList.remove("active");
     filters.classList.remove("active");
+    document.body.classList.remove("noscroll");
   });
 };
 
