@@ -6,33 +6,44 @@ const compare = () => {
   if (!compareBtn || !compareInputs || !projectList) return;
 
   let compareMode = false;
+  let checkedQuantity = 0;
+
+  const enterCompareMode = () => {
+    compareMode = true;
+    projectList.classList.add("compare-mode");
+    compareBtn.innerText = "показать все";
+  };
+
+  const exitCompareMode = () => {
+    compareMode = false;
+    projectList.classList.remove("compare-mode");
+    compareBtn.innerText = `сравнить ${checkedQuantity}`;
+  };
 
   compareBtn.addEventListener("click", () => {
     if (compareMode) {
       compareInputs.forEach((input) => {
         input.checked = false;
       });
-      compareMode = false;
-      compareBtn.innerText = "сравнить";
-
-      projectList.classList.remove("compare-mode");
+      checkedQuantity = 0;
+      exitCompareMode();
     } else {
-      projectList.classList.add("compare-mode");
-      compareMode = true;
-      compareBtn.innerText = "показать все";
+      enterCompareMode();
     }
   });
 
-  let checkedQuantity = 0;
-
   compareInputs.forEach((input) => {
     input.addEventListener("change", () => {
-      if (input.checked == true) {
-        checkedQuantity += 1;
+      checkedQuantity += input.checked ? 1 : -1;
+
+      if (compareMode) {
+        if (checkedQuantity <= 0) {
+          checkedQuantity = 0;
+          exitCompareMode();
+        }
       } else {
-        checkedQuantity -= 1;
+        compareBtn.innerText = `сравнить ${checkedQuantity}`;
       }
-      compareBtn.innerText = `сравнить ${checkedQuantity}`;
     });
   });
 };
@@ -73,6 +84,14 @@ const dualRangeSlider = () => {
       minVal.textContent = low;
       maxVal.textContent = high;
 
+      const toPercent = (val, input) =>
+        5 +
+        ((val - parseInt(input.min)) / (parseInt(input.max) - parseInt(input.min))) *
+          80;
+
+      minVal.style.left = `${toPercent(low, minInput)}%`;
+      maxVal.style.left = `${toPercent(high, maxInput)}%`;
+
       // когда min thumb у правого края — поднимаем его z-index, чтобы можно было потянуть влево
       if (low >= parseInt(minInput.max)) {
         minInput.style.zIndex = 5;
@@ -98,29 +117,35 @@ const initMenu = () => {
   const openFilters = document.getElementById("open-filters");
   const closeFilters = document.getElementById("close-filters");
 
+  const closeSidebarMenu = () => {
+    openSidebar.classList.remove("active");
+    sidebar.classList.remove("active");
+    document.body.classList.remove("noscroll");
+  };
+
+  const closeFiltersMenu = () => {
+    openFilters.classList.remove("active");
+    filters.classList.remove("active");
+    document.body.classList.remove("noscroll");
+  };
+
   openSidebar.addEventListener("click", () => {
+    closeFiltersMenu();
     openSidebar.classList.add("active");
     sidebar.classList.add("active");
     document.body.classList.add("noscroll");
   });
 
-  closeSidebar.addEventListener("click", () => {
-    openSidebar.classList.remove("active");
-    sidebar.classList.remove("active");
-    document.body.classList.remove("noscroll");
-  });
+  closeSidebar.addEventListener("click", closeSidebarMenu);
 
   openFilters.addEventListener("click", () => {
+    closeSidebarMenu();
     openFilters.classList.add("active");
     filters.classList.add("active");
     document.body.classList.add("noscroll");
   });
 
-  closeFilters.addEventListener("click", () => {
-    openFilters.classList.remove("active");
-    filters.classList.remove("active");
-    document.body.classList.remove("noscroll");
-  });
+  closeFilters.addEventListener("click", closeFiltersMenu);
 };
 
 document.addEventListener("DOMContentLoaded", () => {

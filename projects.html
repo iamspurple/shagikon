@@ -24,7 +24,7 @@
       </a>
       <div class="header-buttons">
         <button class="header-btn" id="open-sidebar">Меню</button>
-        <button class="header-btn" id="open-filters">Фильтры</button>
+        <button class="header-btn" id="open-filters">Фильтр</button>
       </div>
     </header>
     <div class="container">
@@ -85,113 +85,121 @@
       </aside>
 
       <main class="main">
-        <form class="filters" id="filters">
-          <div class="filters-container">
-            <fieldset class="filters-wrapper">
-              <label for="all">
-                <input checked type="checkbox" name="roomtype" id="all" />
-                все
-              </label>
-              <div class="range">
-                <span class="range-label">площадь</span>
-                <div class="range-body">
-                  <span class="range-val range-val-min">0</span>
-                  <div class="range-track">
-                    <div class="range-track-line"></div>
-                    <input
-                      class="range-input range-input-min"
-                      type="range"
-                      name="square-min"
-                      min="0"
-                      max="1000"
-                      value="0"
-                      step="10"
-                    />
-                    <input
-                      class="range-input range-input-max"
-                      type="range"
-                      name="square-max"
-                      min="0"
-                      max="1000"
-                      value="1000"
-                      step="10"
-                    />
+        <div class="filters-modal" id="filters">
+          <form class="filters">
+            <div class="filters-container">
+              <fieldset class="filters-wrapper">
+                <label for="all">
+                  <input checked type="checkbox" name="roomtype" id="all" />
+                  все
+                </label>
+                <div class="range">
+                  <span class="range-label">площадь</span>
+                  <div class="range-body">
+                    <div class="range-track">
+                      <div class="range-track-line"></div>
+                      <span class="range-val range-val-min">0</span>
+                      <span class="range-val range-val-max">1000</span>
+                      <input
+                        class="range-input range-input-min"
+                        type="range"
+                        name="square-min"
+                        min="0"
+                        max="1000"
+                        value="0"
+                        step="10"
+                      />
+                      <input
+                        class="range-input range-input-max"
+                        type="range"
+                        name="square-max"
+                        min="0"
+                        max="1000"
+                        value="1000"
+                        step="10"
+                      />
+                    </div>
                   </div>
-                  <span class="range-val range-val-max">1000</span>
                 </div>
-              </div>
-              <div class="range">
-                <span class="range-label">установок</span>
-                <div class="range-body">
-                  <span class="range-val range-val-min">4</span>
-                  <div class="range-track">
-                    <div class="range-track-line"></div>
-                    <input
-                      class="range-input range-input-min"
-                      type="range"
-                      name="quantity-min"
-                      min="1"
-                      max="20"
-                      value="4"
-                      step="1"
-                    />
-                    <input
-                      class="range-input range-input-max"
-                      type="range"
-                      name="quantity-max"
-                      min="1"
-                      max="25"
-                      value="25"
-                      step="1"
-                    />
+                <div class="range">
+                  <span class="range-label">установок</span>
+                  <div class="range-body">
+                    <div class="range-track">
+                      <div class="range-track-line"></div>
+                      <span class="range-val range-val-min">4</span>
+                      <span class="range-val range-val-max">20</span>
+                      <input
+                        class="range-input range-input-min"
+                        type="range"
+                        name="quantity-min"
+                        min="1"
+                        max="20"
+                        value="4"
+                        step="1"
+                      />
+                      <input
+                        class="range-input range-input-max"
+                        type="range"
+                        name="quantity-max"
+                        min="1"
+                        max="25"
+                        value="25"
+                        step="1"
+                      />
+                    </div>
                   </div>
-                  <span class="range-val range-val-max">20</span>
                 </div>
-              </div>
-            </fieldset>
-            <fieldset class="filters-wrapper wrap">
-              <label for="meeting">
-                <input type="checkbox" name="roomtype" id="meeting" />
-                переговорная
-              </label>
-              <label for="office">
-                <input type="checkbox" name="roomtype" id="office" />
-                офис
-              </label>
-              <label for="class"
-                >учебный класс
+              </fieldset>
+              <fieldset class="filters-wrapper wrap">
+                <label for="meeting">
+                  <input type="checkbox" name="roomtype" id="meeting" />
+                  переговорная
+                </label>
+                <label for="office">
+                  <input type="checkbox" name="roomtype" id="office" />
+                  офис
+                </label>
+                <label for="class"
+                  >учебный класс
 
-                <input type="checkbox" name="roomtype" id="class" />
-              </label>
-              <label for="child"
-                >детский приём
-                <input type="checkbox" name="roomtype" id="child" />
-              </label>
-              <label for="lab"
-                >тех. лаборатория
-                <input type="checkbox" name="roomtype" id="lab" />
-              </label>
-              <label for="operation"
-                >опер. блок
-                <input type="checkbox" name="roomtype" id="operation" />
-              </label>
-              <label for="xray"
-                >рентген кабинет
-                <input type="checkbox" name="roomtype" id="xray" />
-              </label>
-            </fieldset>
-          </div>
-          <div class="filters-btns">
-            <button class="filters-btn show" type="button">показать 10</button>
-            <button id="compare-btn" class="filters-btn compare" type="button">
-              сравнить 0
+                  <input type="checkbox" name="roomtype" id="class" />
+                </label>
+                <label for="child"
+                  >детский приём
+                  <input type="checkbox" name="roomtype" id="child" />
+                </label>
+                <label for="lab"
+                  >тех. лаборатория
+                  <input type="checkbox" name="roomtype" id="lab" />
+                </label>
+                <label for="operation"
+                  >опер. блок
+                  <input type="checkbox" name="roomtype" id="operation" />
+                </label>
+                <label for="xray"
+                  >рентген кабинет
+                  <input type="checkbox" name="roomtype" id="xray" />
+                </label>
+              </fieldset>
+            </div>
+            <div class="filters-btns">
+              <button class="filters-btn show" type="button">
+                показать 10
+              </button>
+              <button
+                id="compare-btn"
+                class="filters-btn compare"
+                type="button"
+              >
+                сравнить 0
+              </button>
+            </div>
+
+            <button id="close-filters" type="button" class="filters-close-btn">
+              <img src="/assets/icons/close.svg" alt="" />
             </button>
-          </div>
-
-          <button id="close-filters" type="button" class="filters-close-btn">
-            <img src="/assets/icons/close.svg" alt="" />
-          </button>
-        </form>
+          </form>
+        </div>
         <ul class="projects" id="projects-list">
           <li>
             <a class="projects-item-link" href="/project-card.html">
@@ -208,18 +216,20 @@
                       src="/assets/images/plan-1.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -239,18 +249,20 @@
                       src="/assets/images/plan-2.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -270,18 +282,20 @@
                       src="/assets/images/plan-3.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -301,18 +315,20 @@
                       src="/assets/images/plan-4.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -332,18 +348,20 @@
                       src="/assets/images/plan-1.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -363,18 +381,20 @@
                       src="/assets/images/plan-2.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -394,18 +414,20 @@
                       src="/assets/images/plan-3.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
@@ -425,111 +447,20 @@
                       src="/assets/images/plan-4.png"
                       alt="название проекта"
                     />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
+                    <figcaption class="projects-item-number">
+                      <span>102.</span>
                     </figcaption>
                   </figure>
-                </div>
-              </article>
-            </a>
-          </li>
-          <li>
-            <a class="projects-item-link" href="/project-card.html">
-              <article>
-                <div class="projects-item">
-                  <input
-                    class="projects-item-compare"
-                    type="checkbox"
-                    name="compare"
-                    title="Сравнить"
-                  />
-                  <figure class="projects-item-image">
-                    <img
-                      src="/assets/images/plan-1.png"
-                      alt="название проекта"
-                    />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
-                    </figcaption>
-                  </figure>
-                </div>
-              </article>
-            </a>
-          </li>
-          <li>
-            <a class="projects-item-link" href="/project-card.html">
-              <article>
-                <div class="projects-item">
-                  <input
-                    class="projects-item-compare"
-                    type="checkbox"
-                    name="compare"
-                    title="Сравнить"
-                  />
-                  <figure class="projects-item-image">
-                    <img
-                      src="/assets/images/plan-2.png"
-                      alt="название проекта"
-                    />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
-                    </figcaption>
-                  </figure>
-                </div>
-              </article>
-            </a>
-          </li>
-          <li>
-            <a class="projects-item-link" href="/project-card.html">
-              <article>
-                <div class="projects-item">
-                  <input
-                    class="projects-item-compare"
-                    type="checkbox"
-                    name="compare"
-                    title="Сравнить"
-                  />
-                  <figure class="projects-item-image">
-                    <img
-                      src="/assets/images/plan-3.png"
-                      alt="название проекта"
-                    />
-                    <figcaption class="projects-item-info">
-                      <p>
-                        <span
-                          >102. Проект клиники 495,0 кв. м: 11 кабинетов и
-                          оперблок</span
-                        >
-                        <span class="time"
-                          ><time datetime="2025">2025</time> Москва</span
-                        >
-                      </p>
-                    </figcaption>
-                  </figure>
+                  <div class="projects-item-info-wrapper">
+                    <h3 class="projects-item-info">
+                      <span>
+                        102. Проект клиники 495,0 кв. м: 11 кабинетов и оперблок
+                      </span>
+                      <span class="time">
+                        <time datetime="2025">2025</time> Москва
+                      </span>
+                    </h3>
+                  </div>
                 </div>
               </article>
             </a>
