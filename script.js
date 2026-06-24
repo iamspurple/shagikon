@@ -48,6 +48,39 @@ const compare = () => {
   });
 };
 
+const roomTypeFilter = () => {
+  const all = document.getElementById("all");
+  const types = document.querySelectorAll(
+    'input[name="roomtype"]:not(#all)'
+  );
+
+  if (!all || !types.length) return;
+
+  // когда выбран "все" — снимаем остальные
+  all.addEventListener("change", () => {
+    if (all.checked) {
+      types.forEach((input) => {
+        input.checked = false;
+      });
+    }
+  });
+
+  // как только чекнут один из остальных — "все" теряет состояние checked
+  types.forEach((input) => {
+    input.addEventListener("change", () => {
+      if (input.checked) {
+        all.checked = false;
+      }
+
+      // если не выбран ни один тип — возвращаемся к "все"
+      const anyChecked = Array.from(types).some((i) => i.checked);
+      if (!anyChecked) {
+        all.checked = true;
+      }
+    });
+  });
+};
+
 const scrollUp = () => {
   const upBtn = document.getElementById("scrollup");
 
@@ -150,6 +183,7 @@ const initMenu = () => {
 
 document.addEventListener("DOMContentLoaded", () => {
   compare();
+  roomTypeFilter();
   scrollUp();
   dualRangeSlider();
   initMenu();
