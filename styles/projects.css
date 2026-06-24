@@ -490,6 +490,7 @@ body.noscroll {
 
   .header-logo-list {
     display: flex;
+    column-gap: clamp(3px, 0.8vw, 6px);
     font-size: clamp(6.96px, 1.2vw, 9.22px);
     font-weight: 400;
     justify-content: space-between;
