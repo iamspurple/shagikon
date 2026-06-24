@@ -1,35 +1,46 @@
 const compare = () => {
-  const compareBtn = document.getElementById("compare-btn");
+  const compareBtns = [
+    document.getElementById("compare-btn"),
+    document.getElementById("header-compare-btn"),
+  ].filter(Boolean);
   const compareInputs = document.querySelectorAll('input[name="compare"]');
   const projectList = document.getElementById("projects-list");
 
-  if (!compareBtn || !compareInputs || !projectList) return;
+  if (!compareBtns.length || !compareInputs.length || !projectList) return;
 
   let compareMode = false;
   let checkedQuantity = 0;
 
+  const setBtnsText = (text) => {
+    compareBtns.forEach((btn) => {
+      btn.innerText = text;
+    });
+  };
+
   const enterCompareMode = () => {
     compareMode = true;
     projectList.classList.add("compare-mode");
-    compareBtn.innerText = "показать все";
+    setBtnsText("показать все");
   };
 
   const exitCompareMode = () => {
     compareMode = false;
     projectList.classList.remove("compare-mode");
-    compareBtn.innerText = `сравнить ${checkedQuantity}`;
+    setBtnsText(`сравнить ${checkedQuantity}`);
   };
 
-  compareBtn.addEventListener("click", () => {
-    if (compareMode) {
-      compareInputs.forEach((input) => {
-        input.checked = false;
-      });
-      checkedQuantity = 0;
-      exitCompareMode();
-    } else {
-      enterCompareMode();
-    }
+  compareBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (compareMode) {
+        compareInputs.forEach((input) => {
+          input.checked = false;
+        });
+        checkedQuantity = 0;
+        exitCompareMode();
+      } else {
+        enterCompareMode();
+      }
+    });
   });
 
   compareInputs.forEach((input) => {
@@ -42,7 +53,7 @@ const compare = () => {
           exitCompareMode();
         }
       } else {
-        compareBtn.innerText = `сравнить ${checkedQuantity}`;
+        setBtnsText(`сравнить ${checkedQuantity}`);
       }
     });
   });
@@ -150,16 +161,29 @@ const initMenu = () => {
   const openFilters = document.getElementById("open-filters");
   const closeFilters = document.getElementById("close-filters");
 
+  const headerCompareBtn = document.getElementById("header-compare-btn");
+
+  // скрываем кнопку сравнения в шапке, пока открыто меню или фильтры
+  const syncHeaderCompareBtn = () => {
+    if (!headerCompareBtn) return;
+    const isOverlayOpen =
+      sidebar.classList.contains("active") ||
+      filters.classList.contains("active");
+    headerCompareBtn.classList.toggle("hidden", isOverlayOpen);
+  };
+
   const closeSidebarMenu = () => {
     openSidebar.classList.remove("active");
     sidebar.classList.remove("active");
     document.body.classList.remove("noscroll");
+    syncHeaderCompareBtn();
   };
 
   const closeFiltersMenu = () => {
     openFilters.classList.remove("active");
     filters.classList.remove("active");
     document.body.classList.remove("noscroll");
+    syncHeaderCompareBtn();
   };
 
   openSidebar.addEventListener("click", () => {
@@ -167,6 +191,7 @@ const initMenu = () => {
     openSidebar.classList.add("active");
     sidebar.classList.add("active");
     document.body.classList.add("noscroll");
+    syncHeaderCompareBtn();
   });
 
   closeSidebar.addEventListener("click", closeSidebarMenu);
@@ -176,6 +201,7 @@ const initMenu = () => {
     openFilters.classList.add("active");
     filters.classList.add("active");
     document.body.classList.add("noscroll");
+    syncHeaderCompareBtn();
   });
 
   closeFilters.addEventListener("click", closeFiltersMenu);

@@ -15,6 +15,10 @@ body.noscroll {
   overflow: hidden;
 }
 
+.hidden {
+  opacity: 0 !important;
+}
+
 .header {
   display: none;
 }
@@ -90,14 +94,14 @@ body.noscroll {
 
 .sidebar-search input {
   background-color: black;
-  color: white;
+  color: #c8c8c8;
   border: none;
   outline: none;
   height: clamp(17.07px, 2.222vw, 56.89px);
   width: clamp(122.67px, 15.972vw, 408.89px);
   border-radius: clamp(4.27px, 0.556vw, 14.22px);
   padding-left: clamp(16px, 2.083vw, 53.33px);
-  font-size: clamp(16px, 1.5vw, 45px);
+  font-size: clamp(7.47px, 0.972vw, 24.89px);
 }
 
 .sidebar-search input::placeholder {
@@ -502,6 +506,16 @@ body.noscroll {
     justify-content: space-between;
   }
 
+  .header-compare-btn {
+    border: none;
+    border-radius: 3px;
+    background-color: #00ccff;
+    color: black;
+    width: clamp(83.5px, 14.4vw, 110px);
+    height: clamp(26px, 4.5vw, 34.5px);
+    font-size: clamp(12.37px, 2.133vw, 16.38px);
+  }
+
   .header-btn {
     background-color: transparent;
     border: none;
@@ -557,6 +571,7 @@ body.noscroll {
     width: clamp(177.87px, 30.667vw, 235.52px);
     height: clamp(24.75px, 4.267vw, 32.77px);
     padding-left: clamp(23.2px, 4vw, 30.72px);
+    font-size: clamp(12.37px, 2.133vw, 16.38px);
   }
 
   .sidebar-logo {
@@ -741,6 +756,10 @@ body.noscroll {
 
   .footer {
     height: clamp(19.3px, 3.33vw, 25.6px);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 200;
   }
 
   .footer-copyright {
@@ -775,6 +794,18 @@ body.noscroll {
     font-size: clamp(7.68px, 2.4vw, 13.92px);
   }
 
+  .header-compare-btn {
+    width: clamp(93.86px, 29.3vw, 170px);
+    height: clamp(28px, 8.8vw, 51px);
+    font-size: clamp(13.63px, 4.26vw, 24.8px);
+    border-radius: 5px;
+    position: fixed;
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+
   .header-btn {
     font-size: clamp(20.48px, 6.4vw, 37.12px);
   }
@@ -798,6 +829,7 @@ body.noscroll {
     width: clamp(196.27px, 61.333vw, 355.73px);
     height: clamp(27.31px, 8.533vw, 49.49px);
     padding-left: clamp(27.31px, 8.533vw, 49.49px);
+    font-size: clamp(13.63px, 4.26vw, 24.8px);
   }
 
   .sidebar-search::before {
