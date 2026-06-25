@@ -178,6 +178,7 @@ body.noscroll {
   font-weight: bold;
   color: black;
   border-bottom: 2px solid black;
+  font-size: calc(clamp(7.47px, 0.972vw, 24.89px) * 0.95);
 }
 
 .filters-wrapper label input {
@@ -210,6 +211,9 @@ body.noscroll {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: clamp(96px, 12.5vw, 320px);
+  /* внешняя рамка сверху и слева — низ/право закрывают сами элементы */
+  border-top: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  border-left: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
 }
 
 .projects.compare-mode li {
@@ -223,15 +227,9 @@ body.noscroll {
 .projects-item {
   position: relative;
   width: 100%;
-  border: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  border-right: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  border-bottom: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
   transition: all 0.3s ease;
-}
-
-.projects li:nth-child(3n + 2) .projects-item {
-  margin-left: calc(-1 * clamp(1.07px, 0.139vw, 3.56px));
-}
-.projects li:nth-child(3n + 3) .projects-item {
-  margin-left: calc(-2 * clamp(1.07px, 0.139vw, 3.56px));
 }
 
 .projects-item-compare {
@@ -643,6 +641,10 @@ body.noscroll {
     font-size: clamp(12.37px, 2.133vw, 16.38px);
   }
 
+  .filters-wrapper label:has(input:checked) {
+    font-size: calc(clamp(12.37px, 2.133vw, 16.38px) * 0.95);
+  }
+
   .filters-wrapper label[for="all"] {
     margin-bottom: 0;
   }
@@ -715,17 +717,6 @@ body.noscroll {
 
   .projects {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .projects li:nth-child(3n + 2) .projects-item {
-    margin-left: 0;
-  }
-  .projects li:nth-child(3n + 3) .projects-item {
-    margin-left: 0;
-  }
-
-  .projects li:nth-child(even) .projects-item {
-    margin-left: -1px;
   }
 
   .projects-item-compare {
@@ -863,7 +854,7 @@ body.noscroll {
   }
 
   .filters-container {
-    width: 70%;
+    width: 75%;
     row-gap: clamp(34px, 10.67vw, 62px);
   }
 
@@ -886,6 +877,10 @@ body.noscroll {
     font-size: clamp(13.63px, 4.26vw, 24.8px);
   }
 
+  .filters-wrapper label:has(input:checked) {
+    font-size: calc(clamp(13.63px, 4.26vw, 24.8px) * 0.95);
+  }
+
   .range {
     gap: clamp(17px, 5.3vw, 31px);
   }
@@ -901,10 +896,6 @@ body.noscroll {
   .projects {
     grid-template-columns: 1fr;
     margin-bottom: clamp(42.67px, 13.333vw, 77.33px);
-  }
-
-  .projects li:nth-child(even) .projects-item {
-    margin-left: 0;
   }
 
   .projects-item-compare {
