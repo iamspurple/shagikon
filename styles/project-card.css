@@ -13,6 +13,12 @@ body {
   grid-template-columns: 3.5vw 1fr;
 }
 
+/* грид-элемент должен уметь сжиматься уже своего контента (картинки/слайдер),
+   иначе колонка 1fr раздувается и появляется горизонтальный скролл */
+.main {
+  min-width: 0;
+}
+
 .sidebar {
   background-color: var(--color-dark);
   display: flex;
@@ -22,8 +28,9 @@ body {
   padding-block: clamp(20.27px, 2.639vw, 67.56px);
   padding-left: clamp(11.73px, 1.528vw, 39.11px);
   padding-right: clamp(5.33px, 0.694vw, 17.78px);
+  min-width: 0;
   max-height: 100vh;
-  height: 100%;
+  height: 100vh;
   overflow-y: auto;
   position: sticky;
   top: 0;
