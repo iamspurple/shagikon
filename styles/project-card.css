@@ -813,10 +813,10 @@ body {
     height: 12px;
   }
 
-  /* кнопка выхода — тёмная полоса слева (фикс. ширина), × по центру */
+  /* кнопка выхода — тёмная полоса слева (фикс. ширина), × в верхнем углу */
   .container.fullscreen .sidebar-exit {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     position: fixed;
     top: 0;
@@ -824,7 +824,7 @@ body {
     width: 40px;
     height: 100dvh;
     aspect-ratio: auto;
-    padding: 0;
+    padding: 12px 0;
     background: var(--color-dark);
     border: none;
     z-index: 1001;
@@ -850,11 +850,14 @@ body {
   }
 
   /* левая полоса × после поворота должна оказаться сверху — кладём её туда
-     с той же толщиной (40px), это та же полоса, только повёрнутая */
+     с той же толщиной (40px); × — в углу (справа, как верх левой полосы при повороте) */
   .container.fullscreen .sidebar-exit {
     top: 0;
     left: 0;
     width: 100dvw;
     height: 40px;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 12px;
   }
 }
