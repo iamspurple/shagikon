@@ -238,10 +238,12 @@ body {
 
 .container.fullscreen .main-content {
   position: relative;
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
+  /* клипуем увеличенную (zoom) картинку, чтобы не вылезала на сайдбар */
+  overflow: hidden;
 }
 
 /* связанные проекты прячем в fullscreen */
@@ -308,14 +310,14 @@ body {
 /* чертёж — на всю ширину, фото — по высоте */
 .container.fullscreen .images-list li.plan img {
   width: 100%;
-  max-height: 100vh;
+  max-height: 100dvh;
   object-fit: contain;
 }
 
 .container.fullscreen .images-list li.photo img {
   width: auto;
   max-width: 100%;
-  height: 90vh;
+  height: 90dvh;
   margin-bottom: 0;
   object-fit: contain;
 }
@@ -752,33 +754,75 @@ body {
   }
 }
 
-/* ===== Мобильный fullscreen =====
-   На мобиле структура .container отличается, поэтому вьюер выносим
-   в fixed-overlay — он не зависит от раскладки под ним. */
+/* одноколоночная раскладка обычной (не-fullscreen) мобильной страницы */
 @media screen and (max-width: 580px) {
   .container {
     grid-template-columns: 1fr;
   }
+}
 
+/* ===== Телефон: fullscreen-слайдер =====
+   Портрет и альбом должны выглядеть ТОЧЬ-В-ТОЧЬ одинаково: в портрете весь
+   слайдер целиком повёрнут на 90°, как будто телефон перевели в альбом.
+   Ловим обе ориентации телефона (короткая сторона ≤580), вьюер — полноэкранный
+   оверлей, а размеры управления — ФИКСИРОВАННЫЕ (не зависят от vw/ориентации). */
+@media (pointer: coarse) and (max-width: 580px),
+  (pointer: coarse) and (max-height: 580px) {
   .container.fullscreen .main-content {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100dvw;
+    height: 100dvh;
     z-index: 1000;
     background-color: #c8c8c8;
+    overflow: hidden;
   }
 
-  /* кнопка выхода — тёмная полоса на всю высоту слева, как на планшете,
-     но поверх fixed-вьюера (сам сайдбар перекрыт оверлеем) */
+  /* картинка заполняет вьюер (а не vh), чтобы крутиться вместе с ним */
+  .container.fullscreen .images-list li.plan img,
+  .container.fullscreen .images-list li.photo img {
+    width: 100%;
+    height: 100%;
+    max-width: 100%;
+    max-height: 100%;
+    margin-bottom: 0;
+    object-fit: contain;
+  }
+
+  /* фикс. размеры управления — одинаковы в портрете и альбоме */
+  .container.fullscreen .slider-arrow {
+    padding: 12px;
+  }
+  .container.fullscreen .slider-arrow img {
+    width: 24px;
+  }
+  .container.fullscreen .slider-prev {
+    left: 52px;
+  }
+  .container.fullscreen .slider-next {
+    right: 16px;
+  }
+  .container.fullscreen .slider-dots {
+    bottom: 24px;
+    left: 52px;
+    gap: 10px;
+  }
+  .container.fullscreen .slider-dot {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* кнопка выхода — тёмная полоса слева (фикс. ширина), × по центру */
   .container.fullscreen .sidebar-exit {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: fixed;
     top: 0;
     left: 0;
-    width: clamp(30px, 9vw, 50px);
-    height: 100vh;
+    width: 40px;
+    height: 100dvh;
     aspect-ratio: auto;
     padding: 0;
     background: var(--color-dark);
@@ -786,55 +830,31 @@ body {
     z-index: 1001;
     cursor: pointer;
   }
-
   .container.fullscreen .sidebar-exit svg {
     display: block;
-    width: 100%;
+    width: 18px;
     height: auto;
   }
 }
 
-/* Портрет на мобиле — разворачиваем вьюер в «альбом» поворотом на 90° */
+/* Портрет телефона: разворачиваем ВЕСЬ слайдер на 90° (это и есть «альбом») */
 @media (orientation: portrait) and (max-width: 580px) {
-  .container {
-    grid-template-columns: 1fr;
-  }
+  /* вьюер получает габариты альбома и поворачивается целиком —
+     картинка, стрелки и точки внутри крутятся вместе с ним */
   .container.fullscreen .main-content {
     left: 100%;
-    width: 100vh; /* по длинной стороне экрана */
-    height: 100vw; /* по короткой */
+    width: 100dvh;
+    height: 100dvw;
     transform-origin: 0 0;
     transform: rotate(90deg);
   }
 
-  /* размеры картинок берём от повёрнутого контейнера, а не от vh/vw */
-  .container.fullscreen .images-list li.plan img,
-  .container.fullscreen .images-list li.photo img {
-    width: 100%;
-    height: 100%;
-    max-height: none;
-    margin-bottom: 0;
-    object-fit: contain;
-  }
-
-  /* раз контент повёрнут — полосу сайдбара кладём сверху (горизонтально) */
+  /* левая полоса × после поворота должна оказаться сверху — кладём её туда
+     с той же толщиной (40px), это та же полоса, только повёрнутая */
   .container.fullscreen .sidebar-exit {
-    width: 100vw;
-    height: clamp(30px, 9vw, 50px);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding-inline: clamp(10px, 3vw, 18px);
-  }
-
-  .container.fullscreen .sidebar-exit svg {
-    width: clamp(12px, 4vw, 20px);
-    height: auto;
-  }
-
-  /* после поворота стрелка «назад» оказывается сверху по центру и попадает
-     под полосу сайдбара — сдвигаем её ниже толщины полосы */
-  .container.fullscreen .slider-prev {
-    left: clamp(44px, 13vw, 66px);
+    top: 0;
+    left: 0;
+    width: 100dvw;
+    height: 40px;
   }
 }
