@@ -1,4 +1,840 @@
+body {
+  font-family: var(--font-arial);
+  background-color: #c8c8c8;
+}
+
 .container {
   display: grid;
   grid-template-columns: 22vw 1fr;
+  transition: grid-template-columns 0.5s ease;
+}
+
+.container.fullscreen {
+  grid-template-columns: 3.5vw 1fr;
+}
+
+.sidebar {
+  background-color: var(--color-dark);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10.67px, 1.389vw, 35.56px);
+  color: var(--color-light);
+  padding-block: clamp(20.27px, 2.639vw, 67.56px);
+  padding-left: clamp(11.73px, 1.528vw, 39.11px);
+  padding-right: clamp(5.33px, 0.694vw, 17.78px);
+  max-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
+  position: sticky;
+  top: 0;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-light) transparent;
+  scrollbar-gutter: stable;
+}
+
+/* Chrome, Safari, Edge */
+.sidebar::-webkit-scrollbar {
+  width: 5.6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--color-light);
+  border-radius: 2.8px;
+}
+
+.sidebar-exit {
+  display: none;
+}
+
+.sidebar-back {
+  font-size: clamp(6.4px, 0.833vw, 21.33px);
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(2.67px, 0.347vw, 8.89px);
+}
+
+.sidebar-back svg {
+  width: clamp(4.8px, 0.625vw, 16px);
+}
+
+.project-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(6.4px, 0.833vw, 21.33px);
+}
+
+.project-number {
+  font-size: clamp(7.47px, 0.972vw, 24.89px);
+  font-weight: bold;
+}
+
+.project-title {
+  font-size: clamp(12.8px, 1.667vw, 42.67px);
+  font-weight: bold;
+  line-height: 140%;
+}
+
+.project-subtitle {
+  font-size: clamp(5.33px, 0.694vw, 17.78px);
+  font-weight: bold;
+  line-height: 190%;
+  text-decoration: underline;
+  max-width: 65%;
+}
+
+.project-composition {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-composition-title {
+  font-size: clamp(4.27px, 0.556vw, 14.22px);
+  font-weight: bold;
+  line-height: 150%;
+}
+
+.project-composition p {
+  font-size: clamp(4.27px, 0.556vw, 14.22px);
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.project-description {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-description-title {
+  font-size: clamp(6.4px, 0.833vw, 21.33px);
+  font-weight: bold;
+}
+
+.project-description p {
+  font-size: clamp(5.33px, 0.694vw, 17.78px);
+  font-weight: 400;
+  line-height: 160%;
+  max-width: 90%;
+}
+
+.project-plan summary {
+  position: relative;
+  list-style: none;
+  width: fit-content;
+  padding-right: clamp(10.67px, 1.389vw, 35.56px);
+  font-size: clamp(6.4px, 0.833vw, 21.33px);
+  font-weight: bold;
+}
+
+.project-plan summary::marker {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.project-plan summary::after {
+  content: "";
+  position: absolute;
+  top: 30%;
+  right: 0;
+  transform: rotate(180deg);
+  display: inline-block;
+  width: clamp(4.8px, 0.625vw, 16px);
+  height: clamp(4.8px, 0.625vw, 16px);
+  background: url(/assets/icons/arrow.svg) center/contain no-repeat;
+}
+
+.project-plan[open] summary::after {
+  transform: none;
+}
+
+.project-plan-content {
+  padding-top: clamp(8px, 1.042vw, 26.67px);
+  display: flex;
+  flex-direction: column;
+}
+
+.project-plan-title {
+  font-size: clamp(6.4px, 0.833vw, 21.33px);
+  font-weight: bold;
+}
+
+.project-plan p {
+  font-size: clamp(5.33px, 0.694vw, 17.78px);
+  font-weight: 400;
+  line-height: 160%;
+}
+
+.project-view-tabs {
+  display: flex;
+  align-items: center;
+  gap: clamp(5.33px, 0.694vw, 17.78px);
+}
+
+.project-view-tab {
+  color: #9a9b9f;
+  background-color: transparent;
+  font-size: clamp(8px, 1.042vw, 26.67px);
+  text-transform: uppercase;
+  border: none;
+}
+
+.project-view-tab.active {
+  color: var(--color-light);
+}
+
+.images-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.images-list li {
+  width: 100%;
+}
+
+/* переключение фото / чертежи по вкладкам (только вне fullscreen) */
+.container:not(.fullscreen) .images-list.view-plan li.photo {
+  display: none;
+}
+
+.container:not(.fullscreen) .images-list.view-photo li.plan {
+  display: none;
+}
+
+.images-list li figure {
+  display: flex;
+  justify-content: center;
+}
+
+.images-list li.plan img {
+  width: 100%;
+  height: auto;
+}
+
+.images-list li.photo img {
+  width: 80%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 180px;
+}
+
+.images-list li {
+  cursor: zoom-in;
+}
+
+/* ===== Полноэкранный слайдер ===== */
+
+/* элементы управления видны только в fullscreen */
+.slider-arrow,
+.slider-dots {
+  display: none;
+}
+
+.container.fullscreen .main-content {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* связанные проекты прячем в fullscreen */
+.container.fullscreen .related {
+  display: none;
+}
+
+/* сворачиваем содержимое сайдбара, оставляя кнопку выхода */
+.container.fullscreen .sidebar {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.container.fullscreen .sidebar > *:not(.sidebar-exit) {
+  display: none;
+}
+
+.container.fullscreen .sidebar-exit {
+  position: absolute;
+  display: block;
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 100%;
+  aspect-ratio: 1/1;
+  cursor: pointer;
+}
+
+.container.fullscreen .sidebar-exit svg {
+  width: 100%;
+}
+
+/* слайды */
+.container.fullscreen .images-list {
+  height: 100%;
+  justify-content: center;
+}
+
+.container.fullscreen .images-list li {
+  display: none;
+  height: 100%;
+  cursor: default;
+}
+
+.container.fullscreen .images-list li.active {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container.fullscreen .images-list li figure {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+}
+
+/* картинки слайдера: жестами управляет JS (свой pinch-zoom) */
+.container.fullscreen .images-list li img {
+  touch-action: none;
+  transform-origin: center center;
+}
+
+/* чертёж — на всю ширину, фото — по высоте */
+.container.fullscreen .images-list li.plan img {
+  width: 100%;
+  max-height: 100vh;
+  object-fit: contain;
+}
+
+.container.fullscreen .images-list li.photo img {
+  width: auto;
+  max-width: 100%;
+  height: 90vh;
+  margin-bottom: 0;
+  object-fit: contain;
+}
+
+/* стрелки */
+.container.fullscreen .slider-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: clamp(8px, 1vw, 24px);
+  z-index: 10;
+}
+
+.container.fullscreen .slider-prev {
+  left: clamp(4px, 0.5vw, 16px);
+}
+
+.container.fullscreen .slider-next {
+  right: clamp(4px, 0.5vw, 16px);
+  transform: translateY(-50%) scaleX(-1);
+}
+
+.slider-arrow img {
+  width: clamp(12px, 1.389vw, 35.56px);
+  height: auto;
+}
+
+/* точки */
+.container.fullscreen .slider-dots {
+  display: flex;
+  gap: clamp(9px, 1.2vw, 30px);
+  position: absolute;
+  bottom: clamp(20px, 3.733vw, 44px);
+  left: 10%;
+  z-index: 10;
+}
+
+.slider-dot {
+  width: clamp(5px, 0.556vw, 14.22px);
+  height: clamp(5px, 0.556vw, 14.22px);
+  border-radius: 50%;
+  border: none;
+  background: var(--color-light);
+  padding: 0;
+  cursor: pointer;
+}
+
+.slider-dot.active {
+  background: var(--color-dark);
+}
+
+/* ===== Связанные проекты (слайдер) ===== */
+
+.related {
+  padding-inline: clamp(25.07px, 3.264vw, 83.56px);
+  padding-bottom: clamp(48px, 6.25vw, 160px);
+}
+
+/* вьюпорт без паддинга — обрезает ровно по краю, без «проглядывания» 4-й карточки.
+   Левую границу рамки держим здесь: вьюпорт не двигается при прокрутке,
+   поэтому слева линия видна всегда (а не только у первой карточки) */
+.related-viewport {
+  overflow: hidden;
+  border-left: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+}
+
+.related-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: clamp(15.36px, 2vw, 51.2px);
+}
+
+.related-title {
+  font-size: clamp(7.68px, 1vw, 25.6px);
+  font-weight: bold;
+}
+
+.related-slider-controls {
+  display: flex;
+  gap: clamp(15.36px, 2vw, 51.2px);
+}
+
+.related-slider-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(3.2px, 0.417vw, 10.67px);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: clamp(7.68px, 1vw, 25.6px);
+  text-wrap: nowrap;
+  font-weight: bold;
+}
+
+.related-slider-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.related-slider-btn svg {
+  width: clamp(4.8px, 0.625vw, 16px);
+  height: auto;
+}
+
+/* трек — без gap, карточки впритык */
+.related-list {
+  display: flex;
+  transition: transform 0.4s ease;
+}
+
+/* десктоп — 3 карточки */
+.related-list li {
+  flex: 0 0 calc(100% / 3);
+}
+
+/* карточка (как в projects): схлопнутые границы — у каждой только верх/право/низ,
+   левую линию рисует вьюпорт, чтобы на стыках не было двойной границы */
+.related-list .projects-item {
+  position: relative;
+  width: 100%;
+  border: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  border-left: none;
+}
+
+.related-list .projects-item-image {
+  width: 100%;
+  height: clamp(110.6px, 14.4vw, 368.64px);
+  position: relative;
+}
+
+.related-list .projects-item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.related-list .projects-item-number {
+  background-color: var(--color-pink);
+  color: var(--color-dark);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.related-list .projects-item-number span {
+  font-size: clamp(19.2px, 2.5vw, 64px);
+  line-height: clamp(14.93px, 1.944vw, 49.78px);
+  border-bottom: clamp(1.07px, 0.139vw, 3.56px) solid var(--color-dark);
+}
+
+.related-list .projects-item-info-wrapper {
+  background-color: rgb(45, 44, 44);
+  color: var(--color-light);
+  padding-left: clamp(5.33px, 0.694vw, 17.78px);
+  padding-top: clamp(3.88px, 0.5vw, 12.8px);
+  height: clamp(23.04px, 3vw, 76.8px);
+}
+
+.related-list .projects-item-info {
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  font-family: var(--font-calibri);
+  font-weight: bold;
+  font-size: clamp(6.4px, 0.833vw, 21.33px);
+}
+
+.related-list .projects-item-info .time {
+  font-family: var(--font-arial);
+  font-size: clamp(5.33px, 0.694vw, 17.78px);
+  font-weight: 400;
+  text-align: right;
+  align-self: flex-end;
+}
+
+@media (hover: hover) {
+  .related-list .projects-item-link:hover .projects-item-number {
+    opacity: 1;
+  }
+}
+
+/* планшет — 2 карточки (vw от ширины экрана, макет 750, диапазон 580–768) */
+@media screen and (max-width: 768px) {
+  .related-list li {
+    flex-basis: calc(100% / 2);
+  }
+
+  .related-list .projects-item-image {
+    height: clamp(109.81px, 18.933vw, 145.41px);
+  }
+
+  .related-list .projects-item-info-wrapper {
+    padding: clamp(6.19px, 1.067vw, 8.19px);
+    height: clamp(23.2px, 4vw, 30.72px);
+  }
+
+  .related-list .projects-item-info {
+    font-size: clamp(6.19px, 1.067vw, 8.19px);
+    gap: 0.3em;
+  }
+
+  .related-list .projects-item-info .time {
+    font-size: clamp(5.18px, 0.893vw, 6.86px);
+  }
+}
+
+/* мобильный — 1 карточка (vw от ширины экрана, макет 375, диапазон 320–580) */
+@media screen and (max-width: 580px) {
+  .related-list li {
+    flex-basis: 100%;
+  }
+
+  .related-list .projects-item-image {
+    height: clamp(163.84px, 51.2vw, 296.96px);
+  }
+
+  .related-list .projects-item-info-wrapper {
+    min-height: clamp(35.84px, 11.2vw, 64.96px);
+    padding: clamp(6.83px, 2.133vw, 12.37px);
+    height: auto;
+  }
+
+  .related-list .projects-item-info {
+    font-size: clamp(9.39px, 2.933vw, 17.01px);
+  }
+
+  .related-list .projects-item-info .time {
+    font-size: clamp(7.68px, 2.4vw, 13.92px);
+  }
+}
+
+/* ===== Сайдбар — адаптив (TODO: вписать px, затем clamp) ===== */
+
+/* планшет (vw от ширины экрана, макет 750, диапазон 580–768) */
+@media screen and (max-width: 768px) {
+  .sidebar {
+    gap: clamp(15.47px, 2.667vw, 20.48px);
+    padding-block: clamp(27.07px, 4.667vw, 35.84px);
+    padding-left: clamp(15.47px, 2.667vw, 20.48px);
+    padding-right: clamp(15.47px, 2.667vw, 20.48px);
+  }
+
+  .sidebar-back {
+    font-size: clamp(9.28px, 1.6vw, 12.29px);
+    gap: clamp(4.64px, 0.8vw, 6.14px);
+  }
+
+  .sidebar-back svg {
+    width: clamp(6.96px, 1.2vw, 9.22px);
+  }
+
+  .project-info {
+    gap: clamp(11.6px, 2vw, 15.36px);
+  }
+
+  .project-number {
+    font-size: clamp(10.83px, 1.867vw, 14.34px);
+  }
+
+  .project-title {
+    font-size: clamp(18.56px, 3.2vw, 24.58px);
+  }
+
+  .project-subtitle {
+    font-size: clamp(7.73px, 1.333vw, 10.24px);
+  }
+
+  .project-composition-title {
+    font-size: clamp(6.19px, 1.067vw, 8.19px);
+  }
+
+  .project-composition p {
+    font-size: clamp(6.19px, 1.067vw, 8.19px);
+  }
+
+  .project-description {
+    display: none;
+  }
+
+  .project-plan summary {
+    padding-right: clamp(15.47px, 2.667vw, 20.48px);
+    font-size: clamp(9.28px, 1.6vw, 12.29px);
+  }
+
+  .project-plan summary::after {
+    width: clamp(7.73px, 1.333vw, 10.24px);
+    height: clamp(7.73px, 1.333vw, 10.24px);
+  }
+
+  .project-plan-content {
+    padding-top: clamp(15.47px, 2.667vw, 20.48px);
+  }
+
+  .project-plan-title {
+    font-size: clamp(9.28px, 1.6vw, 12.29px);
+  }
+
+  .project-plan p {
+    font-size: clamp(7.73px, 1.333vw, 10.24px);
+  }
+
+  .project-view-tabs {
+    gap: clamp(9.28px, 1.6vw, 12.29px);
+  }
+
+  .project-view-tab {
+    font-size: clamp(11.6px, 2vw, 15.36px);
+  }
+}
+
+/* мобильный (vw от ширины экрана, макет 375, диапазон 320–580) */
+@media screen and (max-width: 580px) {
+  .sidebar {
+    gap: clamp(17.07px, 5.333vw, 30.93px);
+    padding-block: clamp(10.24px, 3.2vw, 18.56px);
+    padding-left: clamp(31.57px, 9.867vw, 57.23px);
+    padding-right: clamp(17.07px, 5.333vw, 30.93px);
+    position: relative;
+  }
+
+  .sidebar-back {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+    gap: clamp(8.53px, 2.667vw, 15.47px);
+  }
+
+  .sidebar-back svg {
+    width: clamp(8.53px, 2.667vw, 15.47px);
+  }
+
+  .project-info {
+    gap: clamp(12.8px, 4vw, 23.2px);
+  }
+
+  .project-number {
+    font-size: clamp(11.95px, 3.733vw, 21.65px);
+  }
+
+  .project-title {
+    font-size: clamp(20.48px, 6.4vw, 37.12px);
+  }
+
+  .project-subtitle {
+    font-size: clamp(8.53px, 2.667vw, 15.47px);
+    max-width: 50%;
+  }
+
+  .project-composition-title {
+    font-size: clamp(6.83px, 2.133vw, 12.37px);
+  }
+
+  .project-composition p {
+    font-size: clamp(6.83px, 2.133vw, 12.37px);
+  }
+
+  .project-description {
+    display: flex;
+  }
+
+  .project-description-title {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  .project-description p {
+    font-size: clamp(8.53px, 2.667vw, 15.47px);
+  }
+
+  .project-plan summary {
+    padding-right: clamp(17.07px, 5.333vw, 30.93px);
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  .project-plan summary::after {
+    width: clamp(8.53px, 2.667vw, 15.47px);
+    height: clamp(8.53px, 2.667vw, 15.47px);
+  }
+
+  .project-plan-content {
+    padding-top: clamp(17.07px, 5.333vw, 30.93px);
+  }
+
+  .project-plan-title {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  .project-plan p {
+    font-size: clamp(8.53px, 2.667vw, 15.47px);
+  }
+
+  .project-view-tabs {
+    gap: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  .project-view-tab {
+    font-size: clamp(12.8px, 4vw, 23.2px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    grid-template-columns: 35vw 1fr;
+  }
+
+  .container.container.fullscreen {
+    grid-template-columns: 6.66vw 1fr;
+  }
+
+  .container.fullscreen .images-list li.photo img {
+    width: auto;
+    max-width: 85%;
+  }
+
+  /* стрелки и точки крупнее — только планшет/мобайл (десктоп остаётся прежним) */
+  .slider-arrow img {
+    width: clamp(18px, 3.2vw, 40px);
+  }
+
+  .slider-dot {
+    width: clamp(11px, 2.133vw, 24px);
+    height: clamp(11px, 2.133vw, 24px);
+  }
+}
+
+/* ===== Мобильный fullscreen =====
+   На мобиле структура .container отличается, поэтому вьюер выносим
+   в fixed-overlay — он не зависит от раскладки под ним. */
+@media screen and (max-width: 580px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+
+  .container.fullscreen .main-content {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background-color: #c8c8c8;
+  }
+
+  /* кнопка выхода — тёмная полоса на всю высоту слева, как на планшете,
+     но поверх fixed-вьюера (сам сайдбар перекрыт оверлеем) */
+  .container.fullscreen .sidebar-exit {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: clamp(30px, 9vw, 50px);
+    height: 100vh;
+    aspect-ratio: auto;
+    padding: 0;
+    background: var(--color-dark);
+    border: none;
+    z-index: 1001;
+    cursor: pointer;
+  }
+
+  .container.fullscreen .sidebar-exit svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* Портрет на мобиле — разворачиваем вьюер в «альбом» поворотом на 90° */
+@media (orientation: portrait) and (max-width: 580px) {
+  .container {
+    grid-template-columns: 1fr;
+  }
+  .container.fullscreen .main-content {
+    left: 100%;
+    width: 100vh; /* по длинной стороне экрана */
+    height: 100vw; /* по короткой */
+    transform-origin: 0 0;
+    transform: rotate(90deg);
+  }
+
+  /* размеры картинок берём от повёрнутого контейнера, а не от vh/vw */
+  .container.fullscreen .images-list li.plan img,
+  .container.fullscreen .images-list li.photo img {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    margin-bottom: 0;
+    object-fit: contain;
+  }
+
+  /* раз контент повёрнут — полосу сайдбара кладём сверху (горизонтально) */
+  .container.fullscreen .sidebar-exit {
+    width: 100vw;
+    height: clamp(30px, 9vw, 50px);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-inline: clamp(10px, 3vw, 18px);
+  }
+
+  .container.fullscreen .sidebar-exit svg {
+    width: clamp(12px, 4vw, 20px);
+    height: auto;
+  }
+
+  /* после поворота стрелка «назад» оказывается сверху по центру и попадает
+     под полосу сайдбара — сдвигаем её ниже толщины полосы */
+  .container.fullscreen .slider-prev {
+    left: clamp(44px, 13vw, 66px);
+  }
 }

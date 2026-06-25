@@ -152,6 +152,279 @@ const dualRangeSlider = () => {
   });
 };
 
+const projectViewTabs = () => {
+  const photoBtn = document.getElementById("photo-btn");
+  const planBtn = document.getElementById("plan-btn");
+  const imagesList = document.querySelector(".images-list");
+
+  if (!photoBtn || !planBtn || !imagesList) return;
+
+  const showView = (view) => {
+    imagesList.classList.toggle("view-photo", view === "photo");
+    imagesList.classList.toggle("view-plan", view === "plan");
+
+    photoBtn.classList.toggle("active", view === "photo");
+    planBtn.classList.toggle("active", view === "plan");
+  };
+
+  photoBtn.addEventListener("click", () => showView("photo"));
+  planBtn.addEventListener("click", () => showView("plan"));
+
+  // начальное состояние — по активной кнопке (по умолчанию чертежи)
+  showView(photoBtn.classList.contains("active") ? "photo" : "plan");
+};
+
+const relatedSlider = () => {
+  const track = document.querySelector(".related-list");
+  const btns = document.querySelectorAll(".related-slider-btn");
+
+  if (!track || btns.length < 2) return;
+
+  const slides = Array.from(track.children);
+  if (!slides.length) return;
+
+  const [prevBtn, nextBtn] = btns;
+  let index = 0;
+
+  // шаг = ширина слайда + gap (читаем из DOM, поэтому корректно на всех брейкпоинтах)
+  const metrics = () => {
+    const slideWidth = slides[0].getBoundingClientRect().width;
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    return { slideWidth, gap, step: slideWidth + gap };
+  };
+
+  const visibleCount = () => {
+    const { slideWidth, gap, step } = metrics();
+    if (!slideWidth) return 1;
+    const trackWidth = track.getBoundingClientRect().width;
+    return Math.max(1, Math.round((trackWidth + gap) / step));
+  };
+
+  const maxIndex = () => Math.max(0, slides.length - visibleCount());
+
+  const update = () => {
+    index = Math.min(index, maxIndex());
+    track.style.transform = `translateX(-${index * metrics().step}px)`;
+    prevBtn.disabled = index <= 0;
+    nextBtn.disabled = index >= maxIndex();
+  };
+
+  prevBtn.addEventListener("click", () => {
+    index = Math.max(0, index - 1);
+    update();
+  });
+
+  nextBtn.addEventListener("click", () => {
+    index = Math.min(maxIndex(), index + 1);
+    update();
+  });
+
+  window.addEventListener("resize", update);
+  update();
+};
+
+const sliderZoom = () => {
+  const container = document.querySelector(".container");
+  const imagesList = document.querySelector(".images-list");
+  if (!container || !imagesList) return;
+
+  const MAX_SCALE = 4;
+  let scale = 1;
+  let tx = 0;
+  let ty = 0;
+  let startScale = 1;
+  let startDist = 0;
+  let startMidX = 0;
+  let startMidY = 0;
+  let startTx = 0;
+  let startTy = 0;
+  let startPanX = 0;
+  let startPanY = 0;
+  const pointers = new Map();
+
+  const activeImg = () => imagesList.querySelector("li.active img");
+  const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
+  const inFullscreen = () => container.classList.contains("fullscreen");
+
+  // в портретном fullscreen слайд повёрнут на 90°, поэтому смещение пальца
+  // в координатах экрана переводим в локальные оси слайда
+  const isRotated = () =>
+    inFullscreen() &&
+    window.matchMedia("(orientation: portrait) and (max-width: 580px)").matches;
+  const toLocal = (dx, dy) => (isRotated() ? { x: dy, y: -dx } : { x: dx, y: dy });
+
+  const points = () => [...pointers.values()];
+  const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+
+  const apply = () => {
+    const img = activeImg();
+    if (img) img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  };
+
+  const reset = () => {
+    scale = 1;
+    tx = 0;
+    ty = 0;
+    pointers.clear();
+    imagesList
+      .querySelectorAll("li img")
+      .forEach((img) => (img.style.transform = ""));
+  };
+
+  const onDown = (e) => {
+    if (e.pointerType !== "touch" || !inFullscreen()) return;
+    pointers.set(e.pointerId, e);
+
+    if (pointers.size === 2) {
+      const [a, b] = points();
+      startDist = dist(a, b);
+      startScale = scale;
+      startMidX = (a.clientX + b.clientX) / 2;
+      startMidY = (a.clientY + b.clientY) / 2;
+      startTx = tx;
+      startTy = ty;
+    } else if (pointers.size === 1) {
+      startPanX = e.clientX;
+      startPanY = e.clientY;
+      startTx = tx;
+      startTy = ty;
+    }
+  };
+
+  const onMove = (e) => {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, e);
+
+    if (pointers.size === 2) {
+      // щипок — масштаб
+      const [a, b] = points();
+      if (startDist > 0) {
+        scale = clamp(startScale * (dist(a, b) / startDist), 1, MAX_SCALE);
+      }
+      const mx = (a.clientX + b.clientX) / 2;
+      const my = (a.clientY + b.clientY) / 2;
+      const local = toLocal(mx - startMidX, my - startMidY);
+      tx = startTx + local.x;
+      ty = startTy + local.y;
+      if (scale <= 1) {
+        tx = 0;
+        ty = 0;
+      }
+      apply();
+      e.preventDefault();
+    } else if (pointers.size === 1 && scale > 1) {
+      // панорамирование одним пальцем, когда увеличено
+      const local = toLocal(e.clientX - startPanX, e.clientY - startPanY);
+      tx = startTx + local.x;
+      ty = startTy + local.y;
+      apply();
+      e.preventDefault();
+    }
+  };
+
+  const onUp = (e) => {
+    pointers.delete(e.pointerId);
+
+    if (scale <= 1) {
+      tx = 0;
+      ty = 0;
+      apply();
+    }
+    // если после щипка остался один палец — продолжаем как панорамирование
+    if (pointers.size === 1) {
+      const [p] = points();
+      startPanX = p.clientX;
+      startPanY = p.clientY;
+      startTx = tx;
+      startTy = ty;
+    }
+  };
+
+  imagesList.addEventListener("pointerdown", onDown);
+  imagesList.addEventListener("pointermove", onMove, { passive: false });
+  ["pointerup", "pointercancel"].forEach((type) =>
+    imagesList.addEventListener(type, onUp)
+  );
+
+  // сброс масштаба при смене слайда / выходе из fullscreen
+  imagesList.addEventListener("slidechange", reset);
+
+  // блокируем нативный зум страницы на iOS Safari (жесты pinch)
+  ["gesturestart", "gesturechange", "gestureend"].forEach((type) =>
+    document.addEventListener(type, (e) => e.preventDefault())
+  );
+};
+
+const fullscreenSlider = () => {
+  const container = document.querySelector(".container");
+  const imagesList = document.querySelector(".images-list");
+  const exitBtn = document.getElementById("exit-fullscreen");
+  const prevBtn = document.querySelector(".slider-prev");
+  const nextBtn = document.querySelector(".slider-next");
+  const dotsContainer = document.querySelector(".slider-dots");
+
+  if (!container || !imagesList || !exitBtn) return;
+
+  const slides = Array.from(imagesList.querySelectorAll("li"));
+  if (!slides.length) return;
+
+  let currentIndex = 0;
+
+  // точки по числу слайдов
+  const dots = slides.map((_, i) => {
+    const dot = document.createElement("button");
+    dot.type = "button";
+    dot.className = "slider-dot";
+    dot.setAttribute("aria-label", `Слайд ${i + 1}`);
+    dot.addEventListener("click", () => setActive(i));
+    dotsContainer?.appendChild(dot);
+    return dot;
+  });
+
+  const setActive = (index) => {
+    currentIndex = (index + slides.length) % slides.length;
+    slides.forEach((li, i) =>
+      li.classList.toggle("active", i === currentIndex)
+    );
+    dots.forEach((dot, i) => dot.classList.toggle("active", i === currentIndex));
+    // сообщаем зуму, что слайд сменился — нужно сбросить масштаб
+    imagesList.dispatchEvent(new CustomEvent("slidechange"));
+  };
+
+  const isFullscreen = () => container.classList.contains("fullscreen");
+
+  const enterFullscreen = (index) => {
+    container.classList.add("fullscreen");
+    document.body.style.overflow = "hidden";
+    setActive(index);
+  };
+
+  const exitFullscreen = () => {
+    container.classList.remove("fullscreen");
+    document.body.style.overflow = "";
+    imagesList.dispatchEvent(new CustomEvent("slidechange"));
+  };
+
+  slides.forEach((li, i) => {
+    li.addEventListener("click", () => {
+      // открываем fullscreen только из обычного режима
+      if (!isFullscreen()) enterFullscreen(i);
+    });
+  });
+
+  prevBtn?.addEventListener("click", () => setActive(currentIndex - 1));
+  nextBtn?.addEventListener("click", () => setActive(currentIndex + 1));
+  exitBtn.addEventListener("click", exitFullscreen);
+
+  // управление с клавиатуры в fullscreen
+  document.addEventListener("keydown", (e) => {
+    if (!isFullscreen()) return;
+    if (e.key === "Escape") exitFullscreen();
+    if (e.key === "ArrowLeft") setActive(currentIndex - 1);
+    if (e.key === "ArrowRight") setActive(currentIndex + 1);
+  });
+};
+
 const initMenu = () => {
   const sidebar = document.getElementById("sidebar");
   const openSidebar = document.getElementById("open-sidebar");
@@ -160,6 +433,9 @@ const initMenu = () => {
   const filters = document.getElementById("filters");
   const openFilters = document.getElementById("open-filters");
   const closeFilters = document.getElementById("close-filters");
+
+  // меню есть только на странице со списком проектов
+  if (!openSidebar || !openFilters) return;
 
   const headerCompareBtn = document.getElementById("header-compare-btn");
 
@@ -213,4 +489,8 @@ document.addEventListener("DOMContentLoaded", () => {
   scrollUp();
   dualRangeSlider();
   initMenu();
+  projectViewTabs();
+  fullscreenSlider();
+  sliderZoom();
+  relatedSlider();
 });

@@ -2,14 +2,34 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
     <title>Document</title>
     <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="/styles/project-card.css" />
   </head>
   <body>
     <div class="container">
       <aside class="sidebar">
-        <a href="/projects.html">
+        <button id="exit-fullscreen" class="sidebar-exit">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 11 11"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8.4855 0L10.6067 2.12109L7.4245 5.30347L10.6067 8.4856L8.4855 10.6067L5.3033 7.42456L2.1211 10.6067L0 8.4856L3.1822 5.30347L0 2.12109L2.1211 0L5.3033 3.18213L8.4855 0Z"
+              fill="#EBECEC"
+            />
+          </svg>
+        </button>
+        <a class="sidebar-back" href="/projects.html">
           <svg
             width="9"
             height="10"
@@ -86,33 +106,69 @@
         </details>
 
         <div class="project-view-tabs">
-          <button class="project-view-tab">Фото</button>
-          <button class="project-view-tab active">Чертежи</button>
+          <button id="photo-btn" class="project-view-tab">Фото</button>
+          <button id="plan-btn" class="project-view-tab active">Чертежи</button>
         </div>
       </aside>
       <main class="main">
         <section class="main-content">
-          <section class="plans">
-            <ul>
-              <li>
-                <figure>
-                  <img
-                    src="/assets/images/plans/plan-1.png"
-                    alt="название проекта"
-                  />
-                </figure>
-              </li>
-              <li>
-                <figure>
-                  <img
-                    src="/assets/images/plans/plan-2.png"
-                    alt="название проекта"
-                  />
-                </figure>
-              </li>
-            </ul>
-          </section>
-          <section class="images"></section>
+          <ul class="images-list">
+            <li class="plan">
+              <figure>
+                <img
+                  src="/assets/images/plans/plan-1.png"
+                  alt="название проекта"
+                />
+              </figure>
+            </li>
+            <li class="plan">
+              <figure>
+                <img
+                  src="/assets/images/plans/plan-2.png"
+                  alt="название проекта"
+                />
+              </figure>
+            </li>
+            <li class="photo">
+              <figure>
+                <img
+                  src="/assets/images/photos/photo-1.png"
+                  alt="название проекта"
+                />
+              </figure>
+            </li>
+            <li class="photo">
+              <figure>
+                <img
+                  src="/assets/images/photos/photo-2.png"
+                  alt="название проекта"
+                />
+              </figure>
+            </li>
+            <li class="photo">
+              <figure>
+                <img
+                  src="/assets/images/photos/photo-3.png"
+                  alt="название проекта"
+                />
+              </figure>
+            </li>
+          </ul>
+          <button
+            class="slider-arrow slider-prev"
+            type="button"
+            aria-label="Предыдущий слайд"
+          >
+            <img src="/assets/icons/chevron.svg" alt="" />
+          </button>
+          <button
+            class="slider-arrow slider-next"
+            type="button"
+            aria-label="Следующий слайд"
+          >
+            <img src="/assets/icons/chevron.svg" alt="" />
+          </button>
+          <div class="slider-dots"></div>
         </section>
         <section class="related">
           <div class="related-header">
@@ -154,8 +210,176 @@
               </button>
             </div>
           </div>
+          <div class="related-viewport">
+            <ul class="related-list">
+              <li>
+                <a class="projects-item-link" href="/project-card.html">
+                  <article>
+                    <div class="projects-item">
+                      <figure class="projects-item-image">
+                        <img
+                          src="/assets/images/plans/plan-1.png"
+                          alt="название проекта"
+                        />
+                        <figcaption class="projects-item-number">
+                          <span>102.</span>
+                        </figcaption>
+                      </figure>
+                      <div class="projects-item-info-wrapper">
+                        <h3 class="projects-item-info">
+                          <span
+                            >102. Проект клиники 495,0 кв. м: 11 кабинетов и
+                            оперблок</span
+                          >
+                          <span class="time">
+                            <time datetime="2020">2020</time> Москва
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              </li>
+              <li>
+                <a class="projects-item-link" href="/project-card.html">
+                  <article>
+                    <div class="projects-item">
+                      <figure class="projects-item-image">
+                        <img
+                          src="/assets/images/plans/plan-2.png"
+                          alt="название проекта"
+                        />
+                        <figcaption class="projects-item-number">
+                          <span>101.</span>
+                        </figcaption>
+                      </figure>
+                      <div class="projects-item-info-wrapper">
+                        <h3 class="projects-item-info">
+                          <span
+                            >101. Проект клиники 495,0 кв. м: 11 кабинетов и
+                            оперблок</span
+                          >
+                          <span class="time">
+                            <time datetime="2021">2021</time> Тверь
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              </li>
+              <li>
+                <a class="projects-item-link" href="/project-card.html">
+                  <article>
+                    <div class="projects-item">
+                      <figure class="projects-item-image">
+                        <img
+                          src="/assets/images/photos/photo-1.png"
+                          alt="название проекта"
+                        />
+                        <figcaption class="projects-item-number">
+                          <span>100.</span>
+                        </figcaption>
+                      </figure>
+                      <div class="projects-item-info-wrapper">
+                        <h3 class="projects-item-info">
+                          <span
+                            >100. Проект клиники 495,0 кв. м: 11 кабинетов и
+                            оперблок</span
+                          >
+                          <span class="time">
+                            <time datetime="2021">2021</time> Торжок
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              </li>
+              <li>
+                <a class="projects-item-link" href="/project-card.html">
+                  <article>
+                    <div class="projects-item">
+                      <figure class="projects-item-image">
+                        <img
+                          src="/assets/images/photos/photo-2.png"
+                          alt="название проекта"
+                        />
+                        <figcaption class="projects-item-number">
+                          <span>81.</span>
+                        </figcaption>
+                      </figure>
+                      <div class="projects-item-info-wrapper">
+                        <h3 class="projects-item-info">
+                          <span
+                            >81. Проект клиники 320,0 кв. м: 8 кабинетов</span
+                          >
+                          <span class="time">
+                            <time datetime="2022">2022</time> Москва
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              </li>
+              <li>
+                <a class="projects-item-link" href="/project-card.html">
+                  <article>
+                    <div class="projects-item">
+                      <figure class="projects-item-image">
+                        <img
+                          src="/assets/images/photos/photo-3.png"
+                          alt="название проекта"
+                        />
+                        <figcaption class="projects-item-number">
+                          <span>82.</span>
+                        </figcaption>
+                      </figure>
+                      <div class="projects-item-info-wrapper">
+                        <h3 class="projects-item-info">
+                          <span
+                            >82. Проект клиники 140,0 кв. м: 5 кабинетов</span
+                          >
+                          <span class="time">
+                            <time datetime="2023">2023</time> Казань
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              </li>
+              <li>
+                <a class="projects-item-link" href="/project-card.html">
+                  <article>
+                    <div class="projects-item">
+                      <figure class="projects-item-image">
+                        <img
+                          src="/assets/images/plans/plan-1.png"
+                          alt="название проекта"
+                        />
+                        <figcaption class="projects-item-number">
+                          <span>83.</span>
+                        </figcaption>
+                      </figure>
+                      <div class="projects-item-info-wrapper">
+                        <h3 class="projects-item-info">
+                          <span>83. Проект клиники 410,0 кв. м: оперблок</span>
+                          <span class="time">
+                            <time datetime="2024">2024</time> Сочи
+                          </span>
+                        </h3>
+                      </div>
+                    </div>
+                  </article>
+                </a>
+              </li>
+            </ul>
+          </div>
         </section>
       </main>
     </div>
+    <script src="/script.js"></script>
   </body>
 </html>
