@@ -208,12 +208,16 @@ body.noscroll {
 }
 
 .projects {
+  --card-border-width: clamp(1.07px, 0.139vw, 3.56px);
+  --card-border: var(--card-border-width) solid rgb(45, 44, 44);
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: clamp(96px, 12.5vw, 320px);
-  /* внешняя рамка сверху и слева — низ/право закрывают сами элементы */
-  border-top: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
-  border-left: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  /* рамки целиком на карточках; контейнер не имеет границ, поэтому ничего
+     не «торчит» над пустыми колонками (короткий список / режим сравнения).
+     padding компенсирует отрицательные margin первого ряда и колонки. */
+  padding-top: var(--card-border-width);
+  padding-left: var(--card-border-width);
 }
 
 .projects.compare-mode li {
@@ -226,9 +230,11 @@ body.noscroll {
 
 .projects-item {
   position: relative;
-  width: 100%;
-  border-right: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
-  border-bottom: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  border: var(--card-border);
+  /* соседние рамки накладываются друг на друга → линия остаётся в один
+     border-width, а не складывается вдвое */
+  margin-top: calc(-1 * var(--card-border-width));
+  margin-left: calc(-1 * var(--card-border-width));
   transition: all 0.3s ease;
 }
 
@@ -377,7 +383,7 @@ body.noscroll {
   top: 60%;
   left: 5%;
   transform: translateY(-50%);
-  width: 85%;
+  width: 90%;
   height: clamp(1.07px, 0.139vw, 3.56px);
   pointer-events: none;
   -webkit-appearance: none;
@@ -417,6 +423,31 @@ body.noscroll {
   background: var(--color-dark);
   cursor: pointer;
   border: none;
+}
+
+/* активный диапазон — хотя бы одно значение сдвинуто от крайнего:
+   лейбл как у выбранных фильтров (чёрный, жирный, подчёркнутый),
+   линия и точки тоже чёрные */
+.range.active .range-label {
+  color: black;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+.range.active .range-val {
+  color: black;
+}
+
+.range.active .range-track-line {
+  background: black;
+}
+
+.range.active .range-input::-webkit-slider-thumb {
+  background: black;
+}
+
+.range.active .range-input::-moz-range-thumb {
+  background: black;
 }
 
 .up-btn {

@@ -50,6 +50,50 @@ ol {
   --color-pink: #ffadb2;
 }
 
+/* ===== Скроллбар страницы =====
+   бегунок и кнопки — var(--color-dark) (rgb 44,46,53), подложка — серый body */
+/* Firefox (кнопок не поддерживает) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-dark) #c8c8c8;
+}
+
+/* Chrome, Safari, Edge */
+html::-webkit-scrollbar {
+  width: 5.6px;
+  height: 5.6px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #c8c8c8;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: var(--color-dark);
+  border-radius: 2.8px;
+}
+
+/* кнопки со стрелками — тёмный треугольник на сером, по одной с каждого конца.
+   Нужен именно :single-button, иначе webkit одиночные кнопки не рисует.
+   (Safari и Firefox кнопки скроллбара не поддерживают.) */
+html::-webkit-scrollbar-button {
+  display: none;
+}
+
+html::-webkit-scrollbar-button:single-button {
+  display: block;
+  height: 10px;
+  background: #c8c8c8 center / contain no-repeat;
+}
+
+html::-webkit-scrollbar-button:single-button:vertical:decrement {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2012%2012'%3E%3Cpath%20d='M6,3L10.5,9L1.5,9Z'%20fill='%232c2e35'/%3E%3C/svg%3E");
+}
+
+html::-webkit-scrollbar-button:single-button:vertical:increment {
+  background-image: url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2012%2012'%3E%3Cpath%20d='M6,9L1.5,3L10.5,3Z'%20fill='%232c2e35'/%3E%3C/svg%3E");
+}
+
 .footer {
   font-family: var(--font-arial);
   font-weight: bold;

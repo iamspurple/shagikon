@@ -67,12 +67,15 @@ const roomTypeFilter = () => {
 
   if (!all || !types.length) return;
 
-  // когда выбран "все" — снимаем остальные
+  // когда выбран "все" — снимаем остальные; снять сам "все" кликом нельзя
+  // (он сбрасывается только при выборе конкретного типа)
   all.addEventListener("change", () => {
     if (all.checked) {
       types.forEach((input) => {
         input.checked = false;
       });
+    } else {
+      all.checked = true;
     }
   });
 
@@ -135,6 +138,11 @@ const dualRangeSlider = () => {
 
       minVal.style.left = `${toPercent(low, minInput)}%`;
       maxVal.style.left = `${toPercent(high, maxInput)}%`;
+
+      // диапазон активен, если хотя бы один ползунок сдвинут от своего края
+      const isActive =
+        low > parseInt(minInput.min) || high < parseInt(maxInput.max);
+      range.classList.toggle("active", isActive);
 
       // когда min thumb у правого края — поднимаем его z-index, чтобы можно было потянуть влево
       if (low >= parseInt(minInput.max)) {
@@ -246,12 +254,8 @@ const sliderZoom = () => {
   const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
   const inFullscreen = () => container.classList.contains("fullscreen");
 
-  // в портретном fullscreen слайд повёрнут на 90°, поэтому смещение пальца
-  // в координатах экрана переводим в локальные оси слайда
-  const isRotated = () =>
-    inFullscreen() &&
-    window.matchMedia("(orientation: portrait) and (max-width: 580px)").matches;
-  const toLocal = (dx, dy) => (isRotated() ? { x: dy, y: -dx } : { x: dx, y: dy });
+  // слайд больше не поворачивается, оси пальца совпадают с осями слайда
+  const toLocal = (dx, dy) => ({ x: dx, y: dy });
 
   const points = () => [...pointers.values()];
   const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
@@ -259,6 +263,8 @@ const sliderZoom = () => {
   const apply = () => {
     const img = activeImg();
     if (img) img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    // при увеличении прячем элементы управления (счётчик/точки/стрелки)
+    container.classList.toggle("is-zoomed", scale > 1);
   };
 
   const reset = () => {
@@ -266,6 +272,7 @@ const sliderZoom = () => {
     tx = 0;
     ty = 0;
     pointers.clear();
+    container.classList.remove("is-zoomed");
     imagesList
       .querySelectorAll("li img")
       .forEach((img) => (img.style.transform = ""));
@@ -381,12 +388,21 @@ const fullscreenSlider = () => {
     return dot;
   });
 
+  // числовой указатель «текущий / всего» — привязан к вьюеру, рядом с точками
+  const counter = document.createElement("div");
+  counter.className = "slider-counter";
+  counter.setAttribute("aria-hidden", "true");
+  (imagesList.closest(".main-content") || imagesList.parentElement).appendChild(
+    counter
+  );
+
   const setActive = (index) => {
     currentIndex = (index + slides.length) % slides.length;
     slides.forEach((li, i) =>
       li.classList.toggle("active", i === currentIndex)
     );
     dots.forEach((dot, i) => dot.classList.toggle("active", i === currentIndex));
+    counter.textContent = `${currentIndex + 1} / ${slides.length}`;
     // сообщаем зуму, что слайд сменился — нужно сбросить масштаб
     imagesList.dispatchEvent(new CustomEvent("slidechange"));
   };

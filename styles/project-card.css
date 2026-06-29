@@ -20,7 +20,7 @@ body {
 }
 
 .sidebar {
-  background-color: var(--color-dark);
+  background-color: rgb(44, 46, 53);
   display: flex;
   flex-direction: column;
   gap: clamp(10.67px, 1.389vw, 35.56px);
@@ -235,6 +235,11 @@ body {
   cursor: zoom-in;
 }
 
+/* десктоп: отступ сверху у первого изображения вне fullscreen */
+.container:not(.fullscreen) .images-list li:first-child img {
+  margin-top: clamp(25.8px, 3.359vw, 86px);
+}
+
 /* ===== Полноэкранный слайдер ===== */
 
 /* элементы управления видны только в fullscreen */
@@ -380,6 +385,31 @@ body {
 
 .slider-dot.active {
   background: var(--color-dark);
+}
+
+/* числовой указатель «текущий / всего» — только в fullscreen, над точками */
+.slider-counter {
+  display: none;
+}
+
+.container.fullscreen .slider-counter {
+  display: block;
+  position: absolute;
+  left: 10%;
+  bottom: clamp(34px, 5.6vw, 68px);
+  color: var(--color-dark);
+  font-size: clamp(10px, 1.2vw, 26px);
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* при увеличении картинки управление прячем, чтобы не перекрывало */
+.container.fullscreen.is-zoomed .slider-counter,
+.container.fullscreen.is-zoomed .slider-dots,
+.container.fullscreen.is-zoomed .slider-arrow {
+  display: none;
 }
 
 /* ===== Связанные проекты (слайдер) ===== */
@@ -750,6 +780,11 @@ body {
     max-width: 85%;
   }
 
+  /* отступ сверху у первого изображения — планшет */
+  .container:not(.fullscreen) .images-list li:first-child img {
+    margin-top: clamp(21.65px, 3.733vw, 28.67px);
+  }
+
   /* стрелки и точки крупнее — только планшет/мобайл (десктоп остаётся прежним) */
   .slider-arrow img {
     width: clamp(18px, 3.2vw, 40px);
@@ -765,6 +800,11 @@ body {
 @media screen and (max-width: 580px) {
   .container {
     grid-template-columns: 1fr;
+  }
+
+  /* отступ сверху у первого изображения — мобилка */
+  .container:not(.fullscreen) .images-list li:first-child img {
+    margin-top: clamp(10.24px, 3.2vw, 18.56px);
   }
 }
 
@@ -810,14 +850,25 @@ body {
   .container.fullscreen .slider-next {
     right: 16px;
   }
+  /* точки на всю ширину с равномерным интервалом (right задаёт ширину) */
   .container.fullscreen .slider-dots {
     bottom: 24px;
     left: 52px;
-    gap: 10px;
+    right: 16px;
+    gap: 0;
+    justify-content: space-between;
   }
+  /* мельче, чтобы максимум (30) точек влезал по ширине телефона (320–580) */
   .container.fullscreen .slider-dot {
-    width: 12px;
-    height: 12px;
+    width: 6px;
+    height: 6px;
+    flex-shrink: 0;
+  }
+  /* счётчик над точками — фикс. размер, как остальное управление на телефоне */
+  .container.fullscreen .slider-counter {
+    left: 52px;
+    bottom: 48px;
+    font-size: 14px;
   }
 
   /* кнопка выхода — тёмная полоса слева (фикс. ширина), × в верхнем углу */
@@ -844,20 +895,23 @@ body {
   }
 }
 
-/* Портрет телефона: разворачиваем ВЕСЬ слайдер на 90° (это и есть «альбом») */
+/* Портрет телефона: слайдер НЕ поворачиваем — картинка, стрелки и точки
+   показываются в естественной портретной ориентации. Полоса × остаётся
+   сверху (sidebar — в том же виде, что и в альбоме). */
 @media (orientation: portrait) and (max-width: 580px) {
-  /* вьюер получает габариты альбома и поворачивается целиком —
-     картинка, стрелки и точки внутри крутятся вместе с ним */
-  .container.fullscreen .main-content {
-    left: 100%;
-    width: 100dvh;
-    height: 100dvw;
-    transform-origin: 0 0;
-    transform: rotate(90deg);
+  /* нет левой тёмной полосы — стрелка «назад» и точки выравниваются по краю,
+     как и стрелка «вперёд» (16px) */
+  .container.fullscreen .slider-prev {
+    left: 16px;
+  }
+  .container.fullscreen .slider-dots {
+    left: 16px;
+  }
+  .container.fullscreen .slider-counter {
+    left: 16px;
   }
 
-  /* левая полоса × после поворота должна оказаться сверху — кладём её туда
-     с той же толщиной (40px); × — в углу (справа, как верх левой полосы при повороте) */
+  /* полоса × — сверху, по всей ширине, та же толщина (40px); × в правом углу */
   .container.fullscreen .sidebar-exit {
     top: 0;
     left: 0;
