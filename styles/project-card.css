@@ -57,6 +57,10 @@ body {
   display: none;
 }
 
+.sidebar-logo {
+  display: none;
+}
+
 .sidebar-back {
   font-size: clamp(6.4px, 0.833vw, 21.33px);
   font-weight: bold;
@@ -228,15 +232,15 @@ body {
   width: 80%;
   height: auto;
   object-fit: contain;
-  margin-bottom: 180px;
+  margin-bottom: clamp(54px, 7.031vw, 180px);
 }
 
 .images-list li {
   cursor: zoom-in;
 }
 
-/* десктоп: отступ сверху у первого изображения вне fullscreen */
-.container:not(.fullscreen) .images-list li:first-child img {
+/* десктоп: отступ сверху у первого ФОТО вне fullscreen (чертежи не трогаем) */
+.container:not(.fullscreen) .images-list li.photo:not(.photo ~ .photo) img {
   margin-top: clamp(25.8px, 3.359vw, 86px);
 }
 
@@ -293,6 +297,8 @@ body {
 .container.fullscreen .images-list {
   height: 100%;
   justify-content: center;
+  /* жестами (свайп/зум/панорама) управляет JS — гасим нативные тач-действия */
+  touch-action: none;
 }
 
 .container.fullscreen .images-list li {
@@ -398,7 +404,7 @@ body {
   left: 10%;
   bottom: clamp(34px, 5.6vw, 68px);
   color: var(--color-dark);
-  font-size: clamp(10px, 1.2vw, 26px);
+  font-size: clamp(16px, 1.3vw, 28px);
   line-height: 1;
   white-space: nowrap;
   pointer-events: none;
@@ -410,6 +416,20 @@ body {
 .container.fullscreen.is-zoomed .slider-dots,
 .container.fullscreen.is-zoomed .slider-arrow {
   display: none;
+}
+
+/* на тач-устройствах стрелки листания появляются по касанию (.controls-visible),
+   на десктопе (мышь) остаются видимыми всегда */
+@media (pointer: coarse) {
+  .container.fullscreen .slider-arrow {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+  .container.fullscreen.controls-visible .slider-arrow {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 /* ===== Связанные проекты (слайдер) ===== */
@@ -687,6 +707,26 @@ body {
     padding-left: clamp(31.57px, 9.867vw, 57.23px);
     padding-right: clamp(17.07px, 5.333vw, 30.93px);
     position: relative;
+    max-height: 590px;
+  }
+
+  .sidebar-logo {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    align-self: center;
+  }
+
+  .sidebar-logo-img {
+    width: clamp(218.45px, 68.267vw, 395.95px);
+    height: clamp(40.4px, 13vw, 73.6px);
+  }
+
+  .sidebar-logo-list {
+    display: flex;
+    justify-content: space-between;
+    font-size: clamp(7.68px, 2.4vw, 13.92px);
+    font-weight: 400;
   }
 
   .sidebar-back {
@@ -780,8 +820,8 @@ body {
     max-width: 85%;
   }
 
-  /* отступ сверху у первого изображения — планшет */
-  .container:not(.fullscreen) .images-list li:first-child img {
+  /* отступ сверху у первого ФОТО — планшет */
+  .container:not(.fullscreen) .images-list li.photo:not(.photo ~ .photo) img {
     margin-top: clamp(21.65px, 3.733vw, 28.67px);
   }
 
@@ -790,9 +830,22 @@ body {
     width: clamp(18px, 3.2vw, 40px);
   }
 
+  /* 30 точек крупными не влезают — мельче и на всю ширину с равным интервалом */
+  .container.fullscreen .slider-dots {
+    left: 10%;
+    right: 10%;
+    gap: 0;
+    justify-content: space-between;
+  }
   .slider-dot {
-    width: clamp(11px, 2.133vw, 24px);
-    height: clamp(11px, 2.133vw, 24px);
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+  }
+
+  /* счётчик крупнее, чем базовый минимум */
+  .container.fullscreen .slider-counter {
+    font-size: 18px;
   }
 }
 
@@ -802,8 +855,8 @@ body {
     grid-template-columns: 1fr;
   }
 
-  /* отступ сверху у первого изображения — мобилка */
-  .container:not(.fullscreen) .images-list li:first-child img {
+  /* отступ сверху у первого ФОТО — мобилка */
+  .container:not(.fullscreen) .images-list li.photo:not(.photo ~ .photo) img {
     margin-top: clamp(10.24px, 3.2vw, 18.56px);
   }
 }
@@ -868,7 +921,7 @@ body {
   .container.fullscreen .slider-counter {
     left: 52px;
     bottom: 48px;
-    font-size: 14px;
+    font-size: 16px;
   }
 
   /* кнопка выхода — тёмная полоса слева (фикс. ширина), × в верхнем углу */

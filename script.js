@@ -237,6 +237,12 @@ const sliderZoom = () => {
   if (!container || !imagesList) return;
 
   const MAX_SCALE = 4;
+  const DOUBLE_TAP_SCALE = 2.5; // во сколько увеличивает двойной тап
+  const TAP_MOVE = 10; // px — в пределах этого жест считается тапом, не свайпом
+  const TAP_TIME = 300; // мс — максимальная длительность тапа
+  const DOUBLE_TAP_GAP = 300; // мс между двумя тапами
+  const SWIPE_THRESHOLD = 40; // px — порог свайпа-листания
+
   let scale = 1;
   let tx = 0;
   let ty = 0;
@@ -248,8 +254,19 @@ const sliderZoom = () => {
   let startTy = 0;
   let startPanX = 0;
   let startPanY = 0;
+  // состояние жеста для распознавания тапа/свайпа
+  let gestureStartX = 0;
+  let gestureStartY = 0;
+  let gestureStartTime = 0;
+  let maxPointers = 0;
+  let lastTapTime = 0;
+  let lastTapX = 0;
+  let lastTapY = 0;
+  let controlsTimer = null;
+  let tapTimer = null;
   const pointers = new Map();
 
+  const viewer = imagesList.closest(".main-content") || imagesList;
   const activeImg = () => imagesList.querySelector("li.active img");
   const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
   const inFullscreen = () => container.classList.contains("fullscreen");
@@ -259,6 +276,19 @@ const sliderZoom = () => {
 
   const points = () => [...pointers.values()];
   const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+
+  // не даём утащить увеличенную картинку за пределы (в серую пустоту)
+  const clampPan = () => {
+    const img = activeImg();
+    if (!img) return;
+    const maxX = Math.max(0, (img.offsetWidth * scale - viewer.clientWidth) / 2);
+    const maxY = Math.max(
+      0,
+      (img.offsetHeight * scale - viewer.clientHeight) / 2
+    );
+    tx = clamp(tx, -maxX, maxX);
+    ty = clamp(ty, -maxY, maxY);
+  };
 
   const apply = () => {
     const img = activeImg();
@@ -272,15 +302,90 @@ const sliderZoom = () => {
     tx = 0;
     ty = 0;
     pointers.clear();
+    clearTimeout(tapTimer);
+    tapTimer = null;
     container.classList.remove("is-zoomed");
     imagesList
       .querySelectorAll("li img")
       .forEach((img) => (img.style.transform = ""));
   };
 
+  // показ/скрытие стрелок (поведение тача — см. CSS).
+  // autoHide=true — спрятать сами через 1с (используем при входе в fullscreen)
+  const setControls = (visible, autoHide) => {
+    clearTimeout(controlsTimer);
+    container.classList.toggle("controls-visible", visible);
+    if (visible && autoHide) {
+      controlsTimer = setTimeout(
+        () => container.classList.remove("controls-visible"),
+        1000
+      );
+    }
+  };
+
+  // тап при scale 1 — переключает видимость стрелок (без авто-скрытия)
+  const toggleControls = () =>
+    setControls(!container.classList.contains("controls-visible"), false);
+
+  // двойной тап: увеличение в точку касания или возврат к 1
+  const toggleZoom = (x, y) => {
+    const img = activeImg();
+    if (!img) return;
+    if (scale > 1) {
+      scale = 1;
+      tx = 0;
+      ty = 0;
+    } else {
+      const rect = img.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      scale = DOUBLE_TAP_SCALE;
+      // сдвиг, чтобы точка касания осталась под пальцем
+      tx = (x - cx) * (1 - scale);
+      ty = (y - cy) * (1 - scale);
+      clampPan();
+      // гасим стрелки, чтобы они не всплыли при последующем выходе из зума
+      setControls(false);
+    }
+    apply();
+  };
+
+  const handleTap = (x, y) => {
+    const now = Date.now();
+    if (
+      now - lastTapTime < DOUBLE_TAP_GAP &&
+      Math.hypot(x - lastTapX, y - lastTapY) < 30
+    ) {
+      // второй тап вовремя — это даблтап: отменяем отложенный одиночный
+      clearTimeout(tapTimer);
+      tapTimer = null;
+      lastTapTime = 0; // чтобы тройной тап не считался ещё одним двойным
+      toggleZoom(x, y);
+    } else {
+      lastTapTime = now;
+      lastTapX = x;
+      lastTapY = y;
+      // одиночный тап откладываем на окно даблтапа — чтобы первый тап
+      // даблтапа не мигал стрелками; если второго тапа нет — переключаем
+      clearTimeout(tapTimer);
+      tapTimer = setTimeout(() => {
+        tapTimer = null;
+        if (scale === 1) toggleControls();
+      }, DOUBLE_TAP_GAP);
+    }
+  };
+
   const onDown = (e) => {
     if (e.pointerType !== "touch" || !inFullscreen()) return;
+    if (pointers.size === 0) {
+      // начало нового жеста
+      gestureStartX = e.clientX;
+      gestureStartY = e.clientY;
+      gestureStartTime = Date.now();
+      maxPointers = 0;
+    }
     pointers.set(e.pointerId, e);
+    maxPointers = Math.max(maxPointers, pointers.size);
 
     if (pointers.size === 2) {
       const [a, b] = points();
@@ -317,6 +422,7 @@ const sliderZoom = () => {
         tx = 0;
         ty = 0;
       }
+      clampPan();
       apply();
       e.preventDefault();
     } else if (pointers.size === 1 && scale > 1) {
@@ -324,27 +430,61 @@ const sliderZoom = () => {
       const local = toLocal(e.clientX - startPanX, e.clientY - startPanY);
       tx = startTx + local.x;
       ty = startTy + local.y;
+      clampPan();
       apply();
       e.preventDefault();
     }
+    // scale === 1 и один палец — картинку не двигаем: это свайп/тап (решаем на up)
   };
 
   const onUp = (e) => {
+    // обрабатываем только тач-жесты, начатые в fullscreen
+    if (e.pointerType !== "touch" || !inFullscreen()) {
+      pointers.delete(e.pointerId);
+      return;
+    }
+    const endX = e.clientX;
+    const endY = e.clientY;
     pointers.delete(e.pointerId);
+
+    // ещё остались пальцы — жест не завершён
+    if (pointers.size > 0) {
+      if (pointers.size === 1) {
+        const [p] = points();
+        startPanX = p.clientX;
+        startPanY = p.clientY;
+        startTx = tx;
+        startTy = ty;
+      }
+      return;
+    }
+
+    const dx = endX - gestureStartX;
+    const dy = endY - gestureStartY;
+    const dt = Date.now() - gestureStartTime;
+    const moved = Math.hypot(dx, dy);
+
+    if (maxPointers >= 2) {
+      // был щипок — масштаб уже применён, ни тап, ни свайп не засчитываем
+    } else if (moved < TAP_MOVE && dt < TAP_TIME) {
+      handleTap(endX, endY);
+    } else if (
+      scale === 1 &&
+      Math.abs(dx) > SWIPE_THRESHOLD &&
+      Math.abs(dx) > Math.abs(dy)
+    ) {
+      // свайп листает, только когда не увеличено
+      imagesList.dispatchEvent(
+        new CustomEvent(dx < 0 ? "slidenext" : "slideprev")
+      );
+    }
 
     if (scale <= 1) {
       tx = 0;
       ty = 0;
       apply();
     }
-    // если после щипка остался один палец — продолжаем как панорамирование
-    if (pointers.size === 1) {
-      const [p] = points();
-      startPanX = p.clientX;
-      startPanY = p.clientY;
-      startTx = tx;
-      startTy = ty;
-    }
+    maxPointers = 0;
   };
 
   imagesList.addEventListener("pointerdown", onDown);
@@ -355,6 +495,9 @@ const sliderZoom = () => {
 
   // сброс масштаба при смене слайда / выходе из fullscreen
   imagesList.addEventListener("slidechange", reset);
+
+  // при входе в fullscreen стрелки показываются и прячутся через 1с
+  imagesList.addEventListener("fsenter", () => setControls(true, true));
 
   // блокируем нативный зум страницы на iOS Safari (жесты pinch)
   ["gesturestart", "gesturechange", "gestureend"].forEach((type) =>
@@ -413,6 +556,8 @@ const fullscreenSlider = () => {
     container.classList.add("fullscreen");
     document.body.style.overflow = "hidden";
     setActive(index);
+    // показать стрелки при входе (sliderZoom спрячет их через 1с)
+    imagesList.dispatchEvent(new CustomEvent("fsenter"));
   };
 
   const exitFullscreen = () => {
@@ -431,6 +576,10 @@ const fullscreenSlider = () => {
   prevBtn?.addEventListener("click", () => setActive(currentIndex - 1));
   nextBtn?.addEventListener("click", () => setActive(currentIndex + 1));
   exitBtn.addEventListener("click", exitFullscreen);
+
+  // листание свайпом (события шлёт sliderZoom, когда scale === 1)
+  imagesList.addEventListener("slideprev", () => setActive(currentIndex - 1));
+  imagesList.addEventListener("slidenext", () => setActive(currentIndex + 1));
 
   // управление с клавиатуры в fullscreen
   document.addEventListener("keydown", (e) => {
