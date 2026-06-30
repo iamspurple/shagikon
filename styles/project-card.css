@@ -813,6 +813,26 @@ body {
   .project-view-tab {
     font-size: clamp(12.8px, 4vw, 23.2px);
   }
+
+  /* слайдер связанных проектов: заголовок прячем, контролы — на всю ширину */
+  .related-title {
+    display: none;
+  }
+
+  .related-slider-controls {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  /* кнопки слайдера связанных проектов — макет 375 = 12px */
+  .related-slider-btn {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  /* стрелка в кнопке — макет 375 = 9px */
+  .related-slider-btn svg {
+    width: clamp(7.68px, 2.4vw, 13.92px);
+  }
 }
 
 @media screen and (max-width: 768px) {
