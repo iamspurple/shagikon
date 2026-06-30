@@ -432,6 +432,15 @@ body {
   }
 }
 
+/* iOS Safari игнорирует user-scalable=no, поэтому быстрые тапы по кнопкам
+   управления он принимает за double-tap-zoom. manipulation оставляет тап,
+   но отключает нативный двойной тап-зум. */
+.container.fullscreen .slider-arrow,
+.container.fullscreen .slider-dot,
+.container.fullscreen .sidebar-exit {
+  touch-action: manipulation;
+}
+
 /* ===== Связанные проекты (слайдер) ===== */
 
 .related {
