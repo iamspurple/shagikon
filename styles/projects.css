@@ -578,11 +578,11 @@ body.noscroll {
   }
 
   .sidebar {
-    position: absolute;
+    position: fixed;
     width: 100%;
-    max-height: calc(100vh - clamp(88.93px, 15.333vw, 117.76px));
-    height: 100%;
-    min-height: fit-content;
+    /* dvh — динамический вьюпорт: высота учитывает адресную строку Safari,
+       поэтому низ доступен и скролл работает в т.ч. в альбоме */
+    height: calc(100dvh - clamp(88.93px, 15.333vw, 117.76px));
     padding: 0;
     top: clamp(88.93px, 15.333vw, 117.76px);
     left: 0;
@@ -591,7 +591,7 @@ body.noscroll {
     z-index: 100;
     align-items: center;
     justify-content: flex-start;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-bottom: clamp(23.2px, 4vw, 30.72px);
   }
 
@@ -648,17 +648,16 @@ body.noscroll {
   }
 
   .filters-modal {
-    position: absolute;
+    position: fixed;
     width: 100%;
-    max-height: calc(100vh - clamp(88.93px, 15.333vw, 117.76px));
-    height: 100%;
+    height: calc(100dvh - clamp(88.93px, 15.333vw, 117.76px));
     top: clamp(88.93px, 15.333vw, 117.76px);
     left: 0;
     background-color: #c8c8c8;
     display: none;
     z-index: 100;
     gap: clamp(23.2px, 4vw, 30.72px);
-    overflow-y: scroll;
+    overflow-y: auto;
     padding-block: clamp(23.2px, 4vw, 30.72px);
     align-items: flex-start;
     justify-content: flex-end;
