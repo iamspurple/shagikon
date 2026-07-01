@@ -455,6 +455,16 @@ body {
 .related-viewport {
   overflow: hidden;
   border-left: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
+  /* горизонтальный жест перехватывает свайп слайдера, вертикальный —
+     скроллит страницу; выделение/перетаскивание картинок отключаем */
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.related-viewport img {
+  -webkit-user-drag: none;
+  user-select: none;
+  pointer-events: none;
 }
 
 .related-header {
@@ -917,17 +927,27 @@ body {
     z-index: 1000;
     background-color: #c8c8c8;
     overflow: hidden;
+    /* полоса × (в альбоме слева, 40px) не входит в область картинки:
+       flex-центрирование считается по content-box, поэтому картинка встаёт
+       по центру свободной зоны. Абсолютные контролы отсчитываются от
+       padding-box (внешнего края), поэтому их padding не сдвигает. */
+    padding-left: 40px;
   }
 
   /* картинка заполняет вьюер (а не vh), чтобы крутиться вместе с ним */
-  .container.fullscreen .images-list li.plan img,
-  .container.fullscreen .images-list li.photo img {
+  .container.fullscreen .images-list li.plan img {
     width: 100%;
     height: 100%;
     max-width: 100%;
     max-height: 100%;
     margin-bottom: 0;
     object-fit: contain;
+  }
+
+  .container.fullscreen .images-list li.photo img {
+    max-height: 85%;
+    align-self: flex-start;
+    padding-top: 2%;
   }
 
   /* фикс. размеры управления — одинаковы в портрете и альбоме */
@@ -1004,6 +1024,12 @@ body {
     left: 16px;
   }
 
+  /* полоса × сверху → свободную зону поджимаем сверху, а не слева */
+  .container.fullscreen .main-content {
+    padding-left: 0;
+    padding-top: 40px;
+  }
+
   /* полоса × — сверху, по всей ширине, та же толщина (40px); × в правом углу */
   .container.fullscreen .sidebar-exit {
     top: 0;
@@ -1013,5 +1039,11 @@ body {
     align-items: center;
     justify-content: flex-end;
     padding: 0 12px;
+  }
+
+  .container.fullscreen .images-list li.photo img {
+    max-height: 100%;
+    align-self: center;
+    padding-top: 0;
   }
 }

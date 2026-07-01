@@ -359,6 +359,16 @@ body.noscroll {
   pointer-events: none;
 }
 
+/* числа зафиксированы над краями трека (5% и 85% — стартовые позиции
+   ползунков) и не двигаются вслед за ними */
+.range-val-min {
+  left: 5%;
+}
+
+.range-val-max {
+  left: 85%;
+}
+
 .range-track {
   position: relative;
   width: clamp(64px, 8.33vw, 213.22px);
@@ -432,6 +442,7 @@ body.noscroll {
   color: black;
   font-weight: bold;
   text-decoration: underline;
+  font-size: calc(clamp(7.47px, 0.972vw, 24.89px) * 0.95);
 }
 
 .range.active .range-val {
@@ -543,6 +554,14 @@ body.noscroll {
     width: clamp(83.5px, 14.4vw, 110px);
     height: clamp(26px, 4.5vw, 34.5px);
     font-size: clamp(12.37px, 2.133vw, 16.38px);
+    position: fixed;
+    top: calc(
+      clamp(18.56px, 3.2vw, 24.58px) + clamp(7.73px, 1.333vw, 10.24px) +
+        clamp(34.8px, 6vw, 46.08px) + clamp(6.96px, 1.2vw, 9.22px)
+    );
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
   }
 
   .header-btn {
@@ -551,6 +570,7 @@ body.noscroll {
     font-size: clamp(18.56px, 3.2vw, 24.58px);
     line-height: 80%;
     font-weight: bold;
+    height: 1.15em;
   }
 
   .header-btn.active {
@@ -570,9 +590,15 @@ body.noscroll {
     display: none;
     z-index: 100;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     overflow-y: scroll;
     padding-bottom: clamp(23.2px, 4vw, 30.72px);
+  }
+
+  /* центрируем контент через margin: auto — при переполнении margin
+     схлопывается в 0, поэтому верх не обрезается и скроллится до конца */
+  .sidebar.active .sidebar-content {
+    margin-block: auto;
   }
 
   .sidebar.active {
@@ -634,7 +660,7 @@ body.noscroll {
     gap: clamp(23.2px, 4vw, 30.72px);
     overflow-y: scroll;
     padding-block: clamp(23.2px, 4vw, 30.72px);
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
   }
 
@@ -652,6 +678,7 @@ body.noscroll {
     align-items: flex-end;
     justify-content: space-between;
     padding-left: 10%;
+    margin-block: auto;
   }
 
   .filters-container {
@@ -683,6 +710,10 @@ body.noscroll {
   .range-label,
   .range-val {
     font-size: clamp(12.37px, 2.133vw, 16.38px);
+  }
+
+  .range.active .range-label {
+    font-size: calc(clamp(12.37px, 2.133vw, 16.38px) * 0.95);
   }
 
   .filters-wrapper.wrap {
@@ -719,7 +750,7 @@ body.noscroll {
 
   .filters-close-btn {
     position: absolute;
-    bottom: -50%;
+    bottom: 0%;
     left: 0;
   }
 
@@ -822,6 +853,7 @@ body.noscroll {
     font-size: clamp(13.63px, 4.26vw, 24.8px);
     border-radius: 5px;
     position: fixed;
+    top: auto;
     bottom: 10%;
     left: 50%;
     transform: translateX(-50%);
@@ -906,6 +938,10 @@ body.noscroll {
   .range-val,
   .filters-btn {
     font-size: clamp(13.63px, 4.26vw, 24.8px);
+  }
+
+  .range.active .range-label {
+    font-size: calc(clamp(13.63px, 4.26vw, 24.8px) * 0.95);
   }
 
   .filters-wrapper label:has(input:checked) {

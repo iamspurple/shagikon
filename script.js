@@ -67,31 +67,48 @@ const roomTypeFilter = () => {
 
   if (!all || !types.length) return;
 
+  const rangeInputs = document.querySelectorAll(".range-input");
+
+  // хотя бы один диапазон сужен относительно своих границ
+  const anyRangeActive = () =>
+    Array.from(rangeInputs).some((input) =>
+      input.classList.contains("range-input-min")
+        ? +input.value > +input.min
+        : +input.value < +input.max
+    );
+
+  // "все" отмечен ⟺ фильтр не применён: ни категорий, ни диапазонов
+  const refreshAll = () => {
+    const anyType = Array.from(types).some((i) => i.checked);
+    all.checked = !anyType && !anyRangeActive();
+  };
+
   // когда выбран "все" — снимаем остальные; снять сам "все" кликом нельзя
-  // (он сбрасывается только при выборе конкретного типа)
+  // (он сбрасывается только при выборе типа или сужении диапазона)
   all.addEventListener("change", () => {
     if (all.checked) {
       types.forEach((input) => {
         input.checked = false;
+      });
+      // сбрасываем и range-ползунки к их границам
+      rangeInputs.forEach((input) => {
+        input.value = input.classList.contains("range-input-min")
+          ? input.min
+          : input.max;
+        // dualRangeSlider обновит подписи и снимет класс .active
+        input.dispatchEvent(new Event("input", { bubbles: true }));
       });
     } else {
       all.checked = true;
     }
   });
 
-  // как только чекнут один из остальных — "все" теряет состояние checked
+  // выбор типа или изменение диапазона пересчитывает состояние "все"
   types.forEach((input) => {
-    input.addEventListener("change", () => {
-      if (input.checked) {
-        all.checked = false;
-      }
-
-      // если не выбран ни один тип — возвращаемся к "все"
-      const anyChecked = Array.from(types).some((i) => i.checked);
-      if (!anyChecked) {
-        all.checked = true;
-      }
-    });
+    input.addEventListener("change", refreshAll);
+  });
+  rangeInputs.forEach((input) => {
+    input.addEventListener("input", refreshAll);
   });
 };
 
@@ -131,13 +148,7 @@ const dualRangeSlider = () => {
       minVal.textContent = low;
       maxVal.textContent = high;
 
-      const toPercent = (val, input) =>
-        5 +
-        ((val - parseInt(input.min)) / (parseInt(input.max) - parseInt(input.min))) *
-          80;
-
-      minVal.style.left = `${toPercent(low, minInput)}%`;
-      maxVal.style.left = `${toPercent(high, maxInput)}%`;
+      // числа стоят на фиксированных позициях (в CSS), за ползунками не двигаются
 
       // диапазон активен, если хотя бы один ползунок сдвинут от своего края
       const isActive =
@@ -226,6 +237,67 @@ const relatedSlider = () => {
     index = Math.min(maxIndex(), index + 1);
     update();
   });
+
+  // листание свайпом/перетаскиванием
+  const viewport = document.querySelector(".related-viewport") || track;
+  const DRAG_THRESHOLD = 5; // с какого сдвига считаем жест перетаскиванием, а не кликом
+  let dragging = false;
+  let pointerId = null;
+  let startX = 0;
+  let startTx = 0;
+  let moved = false;
+
+  const currentTx = () => -index * metrics().step;
+
+  const onDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    dragging = true;
+    moved = false;
+    pointerId = e.pointerId;
+    startX = e.clientX;
+    startTx = currentTx();
+    track.style.transition = "none";
+    viewport.setPointerCapture?.(e.pointerId);
+  };
+
+  const onMove = (e) => {
+    if (!dragging || e.pointerId !== pointerId) return;
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > DRAG_THRESHOLD) moved = true;
+    track.style.transform = `translateX(${startTx + dx}px)`;
+  };
+
+  const onUp = (e) => {
+    if (!dragging || e.pointerId !== pointerId) return;
+    dragging = false;
+    pointerId = null;
+    track.style.transition = "";
+    const dx = e.clientX - startX;
+    // порог переключения — четверть карточки
+    const threshold = metrics().slideWidth * 0.25 || 40;
+    if (dx <= -threshold) index = Math.min(maxIndex(), index + 1);
+    else if (dx >= threshold) index = Math.max(0, index - 1);
+    update();
+  };
+
+  viewport.addEventListener("pointerdown", onDown);
+  viewport.addEventListener("pointermove", onMove);
+  ["pointerup", "pointercancel"].forEach((type) =>
+    viewport.addEventListener(type, onUp)
+  );
+
+  // после свайпа гасим клик по карточке-ссылке, чтобы не было перехода
+  viewport.addEventListener(
+    "click",
+    (e) => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+        moved = false;
+      }
+    },
+    true
+  );
 
   window.addEventListener("resize", update);
   update();
