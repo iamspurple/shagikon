@@ -359,14 +359,15 @@ body.noscroll {
   pointer-events: none;
 }
 
-/* числа зафиксированы над краями трека (5% и 85% — стартовые позиции
-   ползунков) и не двигаются вслед за ними */
 .range-val-min {
-  left: 5%;
+  left: 2%;
+  transform: translateX(-10%);
 }
 
 .range-val-max {
-  left: 85%;
+  transform: translateX(3%);
+  right: 0;
+  left: auto;
 }
 
 .range-track {
