@@ -720,7 +720,72 @@ const initMenu = () => {
   closeFilters.addEventListener("click", closeFiltersMenu);
 };
 
+const serviceToggle = () => {
+  document.querySelectorAll(".service-toggle").forEach((btn) => {
+    const service = btn.closest(".service");
+    const text = btn.querySelector(".service-toggle-text");
+    if (!service) return;
+
+    btn.addEventListener("click", () => {
+      const collapsed = service.classList.toggle("collapsed");
+      btn.setAttribute("aria-expanded", String(!collapsed));
+      if (text) text.textContent = collapsed ? "Развернуть" : "Свернуть";
+    });
+  });
+};
+
+// подсветка активного подпункта меню «Услуги» по секции в зоне видимости
+const serviceNav = () => {
+  const links = Array.from(
+    document.querySelectorAll(".sidebar-nav-internal-list a")
+  );
+  if (!links.length) return;
+
+  // ссылка ↔ секция (только валидные якоря вида #service-…)
+  const pairs = [];
+  links.forEach((link) => {
+    const hash = link.getAttribute("href");
+    if (!hash || hash.length < 2 || hash[0] !== "#") return;
+    const section = document.getElementById(hash.slice(1));
+    if (section) pairs.push({ link, section });
+  });
+  if (!pairs.length) return;
+
+  const setActive = (link) => {
+    links.forEach((l) => l.classList.toggle("active", l === link));
+  };
+
+  // клик — плавный скролл к секции и сразу подсветка, не дожидаясь observer
+  pairs.forEach(({ link, section }) =>
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      setActive(link);
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+      history.replaceState(null, "", link.getAttribute("href"));
+    })
+  );
+
+  const visible = new Set();
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) visible.add(e.target);
+        else visible.delete(e.target);
+      });
+      // берём самую верхнюю по порядку секцию, попавшую в полосу у верха экрана
+      const current = pairs.find(({ section }) => visible.has(section));
+      if (current) setActive(current.link);
+    },
+    // тонкая полоса на ~18% высоты экрана — секция, пересекающая её, считается активной
+    { rootMargin: "-15% 0px -80% 0px", threshold: 0 }
+  );
+
+  pairs.forEach(({ section }) => observer.observe(section));
+};
+
 document.addEventListener("DOMContentLoaded", () => {
+  serviceToggle();
+  serviceNav();
   compare();
   roomTypeFilter();
   scrollUp();
