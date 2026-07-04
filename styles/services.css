@@ -76,7 +76,7 @@ body.noscroll {
   border-bottom: clamp(0.53px, 0.069vw, 1.78px) solid black;
 }
 
-.sidebar-nav-internal-list {
+.sidebar-nav-inner-list {
   display: flex;
   flex-direction: column;
   gap: clamp(6px, 0.78vw, 20px);
@@ -86,11 +86,11 @@ body.noscroll {
   font-weight: normal;
 }
 
-.sidebar-nav-internal-list a {
+.sidebar-nav-inner-list a {
   display: inline-block;
 }
 
-.sidebar-nav-internal-list a.active {
+.sidebar-nav-inner-list a.active {
   font-weight: bold;
   border-bottom: clamp(0.53px, 0.069vw, 1.78px) solid black;
 }
@@ -466,7 +466,7 @@ body.noscroll {
     align-items: center;
   }
 
-  .sidebar-nav-internal-list {
+  .sidebar-nav-inner-list {
     display: none;
   }
 
