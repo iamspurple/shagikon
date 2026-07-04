@@ -67,7 +67,6 @@ const roomTypeFilter = () => {
 
   const rangeInputs = document.querySelectorAll(".range-input");
 
-  // хотя бы один диапазон сужен относительно своих границ
   const anyRangeActive = () =>
     Array.from(rangeInputs).some((input) =>
       input.classList.contains("range-input-min")
@@ -75,25 +74,20 @@ const roomTypeFilter = () => {
         : +input.value < +input.max,
     );
 
-  // "все" отмечен ⟺ фильтр не применён: ни категорий, ни диапазонов
   const refreshAll = () => {
     const anyType = Array.from(types).some((i) => i.checked);
     all.checked = !anyType && !anyRangeActive();
   };
 
-  // когда выбран "все" — снимаем остальные; снять сам "все" кликом нельзя
-  // (он сбрасывается только при выборе типа или сужении диапазона)
   all.addEventListener("change", () => {
     if (all.checked) {
       types.forEach((input) => {
         input.checked = false;
       });
-      // сбрасываем и range-ползунки к их границам
       rangeInputs.forEach((input) => {
         input.value = input.classList.contains("range-input-min")
           ? input.min
           : input.max;
-        // dualRangeSlider обновит подписи и снимет класс .active
         input.dispatchEvent(new Event("input", { bubbles: true }));
       });
     } else {
@@ -101,7 +95,6 @@ const roomTypeFilter = () => {
     }
   });
 
-  // выбор типа или изменение диапазона пересчитывает состояние "все"
   types.forEach((input) => {
     input.addEventListener("change", refreshAll);
   });
@@ -146,14 +139,10 @@ const dualRangeSlider = () => {
       minVal.textContent = low;
       maxVal.textContent = high;
 
-      // числа стоят на фиксированных позициях (в CSS), за ползунками не двигаются
-
-      // диапазон активен, если хотя бы один ползунок сдвинут от своего края
       const isActive =
         low > parseInt(minInput.min) || high < parseInt(maxInput.max);
       range.classList.toggle("active", isActive);
 
-      // когда min thumb у правого края — поднимаем его z-index, чтобы можно было потянуть влево
       if (low >= parseInt(minInput.max)) {
         minInput.style.zIndex = 5;
         maxInput.style.zIndex = 4;
@@ -187,7 +176,6 @@ const projectViewTabs = () => {
   photoBtn.addEventListener("click", () => showView("photo"));
   planBtn.addEventListener("click", () => showView("plan"));
 
-  // начальное состояние — по активной кнопке (по умолчанию чертежи)
   showView(photoBtn.classList.contains("active") ? "photo" : "plan");
 };
 
@@ -203,7 +191,6 @@ const relatedSlider = () => {
   const [prevBtn, nextBtn] = btns;
   let index = 0;
 
-  // шаг = ширина слайда + gap (читаем из DOM, поэтому корректно на всех брейкпоинтах)
   const metrics = () => {
     const slideWidth = slides[0].getBoundingClientRect().width;
     const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
@@ -236,9 +223,8 @@ const relatedSlider = () => {
     update();
   });
 
-  // листание свайпом/перетаскиванием
   const viewport = document.querySelector(".related-viewport") || track;
-  const DRAG_THRESHOLD = 5; // с какого сдвига считаем жест перетаскиванием, а не кликом
+  const DRAG_THRESHOLD = 5;
   let dragging = false;
   let pointerId = null;
   let startX = 0;
@@ -271,7 +257,6 @@ const relatedSlider = () => {
     pointerId = null;
     track.style.transition = "";
     const dx = e.clientX - startX;
-    // порог переключения — четверть карточки
     const threshold = metrics().slideWidth * 0.25 || 40;
     if (dx <= -threshold) index = Math.min(maxIndex(), index + 1);
     else if (dx >= threshold) index = Math.max(0, index - 1);
@@ -284,7 +269,6 @@ const relatedSlider = () => {
     viewport.addEventListener(type, onUp),
   );
 
-  // после свайпа гасим клик по карточке-ссылке, чтобы не было перехода
   viewport.addEventListener(
     "click",
     (e) => {
@@ -307,11 +291,11 @@ const sliderZoom = () => {
   if (!container || !imagesList) return;
 
   const MAX_SCALE = 4;
-  const DOUBLE_TAP_SCALE = 2.5; // во сколько увеличивает двойной тап
-  const TAP_MOVE = 10; // px — в пределах этого жест считается тапом, не свайпом
-  const TAP_TIME = 300; // мс — максимальная длительность тапа
-  const DOUBLE_TAP_GAP = 300; // мс между двумя тапами
-  const SWIPE_THRESHOLD = 40; // px — порог свайпа-листания
+  const DOUBLE_TAP_SCALE = 2.5;
+  const TAP_MOVE = 10;
+  const TAP_TIME = 300;
+  const DOUBLE_TAP_GAP = 300;
+  const SWIPE_THRESHOLD = 40;
 
   let scale = 1;
   let tx = 0;
@@ -324,7 +308,6 @@ const sliderZoom = () => {
   let startTy = 0;
   let startPanX = 0;
   let startPanY = 0;
-  // состояние жеста для распознавания тапа/свайпа
   let gestureStartX = 0;
   let gestureStartY = 0;
   let gestureStartTime = 0;
@@ -341,14 +324,12 @@ const sliderZoom = () => {
   const clamp = (v, min, max) => Math.min(Math.max(v, min), max);
   const inFullscreen = () => container.classList.contains("fullscreen");
 
-  // слайд больше не поворачивается, оси пальца совпадают с осями слайда
   const toLocal = (dx, dy) => ({ x: dx, y: dy });
 
   const points = () => [...pointers.values()];
   const dist = (a, b) =>
     Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
 
-  // не даём утащить увеличенную картинку за пределы (в серую пустоту)
   const clampPan = () => {
     const img = activeImg();
     if (!img) return;
@@ -368,7 +349,6 @@ const sliderZoom = () => {
     const img = activeImg();
     if (img)
       img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
-    // при увеличении прячем элементы управления (счётчик/точки/стрелки)
     container.classList.toggle("is-zoomed", scale > 1);
   };
 
@@ -385,8 +365,6 @@ const sliderZoom = () => {
       .forEach((img) => (img.style.transform = ""));
   };
 
-  // показ/скрытие стрелок (поведение тача — см. CSS).
-  // autoHide=true — спрятать сами через 1с (используем при входе в fullscreen)
   const setControls = (visible, autoHide) => {
     clearTimeout(controlsTimer);
     container.classList.toggle("controls-visible", visible);
@@ -398,11 +376,9 @@ const sliderZoom = () => {
     }
   };
 
-  // тап при scale 1 — переключает видимость стрелок (без авто-скрытия)
   const toggleControls = () =>
     setControls(!container.classList.contains("controls-visible"), false);
 
-  // двойной тап: увеличение в точку касания или возврат к 1
   const toggleZoom = (x, y) => {
     const img = activeImg();
     if (!img) return;
@@ -415,11 +391,9 @@ const sliderZoom = () => {
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
       scale = DOUBLE_TAP_SCALE;
-      // сдвиг, чтобы точка касания осталась под пальцем
       tx = (x - cx) * (1 - scale);
       ty = (y - cy) * (1 - scale);
       clampPan();
-      // гасим стрелки, чтобы они не всплыли при последующем выходе из зума
       setControls(false);
     }
     apply();
@@ -431,17 +405,14 @@ const sliderZoom = () => {
       now - lastTapTime < DOUBLE_TAP_GAP &&
       Math.hypot(x - lastTapX, y - lastTapY) < 30
     ) {
-      // второй тап вовремя — это даблтап: отменяем отложенный одиночный
       clearTimeout(tapTimer);
       tapTimer = null;
-      lastTapTime = 0; // чтобы тройной тап не считался ещё одним двойным
+      lastTapTime = 0;
       toggleZoom(x, y);
     } else {
       lastTapTime = now;
       lastTapX = x;
       lastTapY = y;
-      // одиночный тап откладываем на окно даблтапа — чтобы первый тап
-      // даблтапа не мигал стрелками; если второго тапа нет — переключаем
       clearTimeout(tapTimer);
       tapTimer = setTimeout(() => {
         tapTimer = null;
@@ -453,7 +424,6 @@ const sliderZoom = () => {
   const onDown = (e) => {
     if (e.pointerType !== "touch" || !inFullscreen()) return;
     if (pointers.size === 0) {
-      // начало нового жеста
       gestureStartX = e.clientX;
       gestureStartY = e.clientY;
       gestureStartTime = Date.now();
@@ -483,7 +453,6 @@ const sliderZoom = () => {
     pointers.set(e.pointerId, e);
 
     if (pointers.size === 2) {
-      // щипок — масштаб
       const [a, b] = points();
       if (startDist > 0) {
         scale = clamp(startScale * (dist(a, b) / startDist), 1, MAX_SCALE);
@@ -501,7 +470,6 @@ const sliderZoom = () => {
       apply();
       e.preventDefault();
     } else if (pointers.size === 1 && scale > 1) {
-      // панорамирование одним пальцем, когда увеличено
       const local = toLocal(e.clientX - startPanX, e.clientY - startPanY);
       tx = startTx + local.x;
       ty = startTy + local.y;
@@ -509,11 +477,9 @@ const sliderZoom = () => {
       apply();
       e.preventDefault();
     }
-    // scale === 1 и один палец — картинку не двигаем: это свайп/тап (решаем на up)
   };
 
   const onUp = (e) => {
-    // обрабатываем только тач-жесты, начатые в fullscreen
     if (e.pointerType !== "touch" || !inFullscreen()) {
       pointers.delete(e.pointerId);
       return;
@@ -522,7 +488,6 @@ const sliderZoom = () => {
     const endY = e.clientY;
     pointers.delete(e.pointerId);
 
-    // ещё остались пальцы — жест не завершён
     if (pointers.size > 0) {
       if (pointers.size === 1) {
         const [p] = points();
@@ -540,7 +505,6 @@ const sliderZoom = () => {
     const moved = Math.hypot(dx, dy);
 
     if (maxPointers >= 2) {
-      // был щипок — масштаб уже применён, ни тап, ни свайп не засчитываем
     } else if (moved < TAP_MOVE && dt < TAP_TIME) {
       handleTap(endX, endY);
     } else if (
@@ -548,7 +512,6 @@ const sliderZoom = () => {
       Math.abs(dx) > SWIPE_THRESHOLD &&
       Math.abs(dx) > Math.abs(dy)
     ) {
-      // свайп листает, только когда не увеличено
       imagesList.dispatchEvent(
         new CustomEvent(dx < 0 ? "slidenext" : "slideprev"),
       );
@@ -568,13 +531,10 @@ const sliderZoom = () => {
     imagesList.addEventListener(type, onUp),
   );
 
-  // сброс масштаба при смене слайда / выходе из fullscreen
   imagesList.addEventListener("slidechange", reset);
 
-  // при входе в fullscreen стрелки показываются и прячутся через 1с
   imagesList.addEventListener("fsenter", () => setControls(true, true));
 
-  // блокируем нативный зум страницы на iOS Safari (жесты pinch)
   ["gesturestart", "gesturechange", "gestureend"].forEach((type) =>
     document.addEventListener(type, (e) => e.preventDefault()),
   );
@@ -595,7 +555,6 @@ const fullscreenSlider = () => {
 
   let currentIndex = 0;
 
-  // точки по числу слайдов
   const dots = slides.map((_, i) => {
     const dot = document.createElement("button");
     dot.type = "button";
@@ -606,7 +565,6 @@ const fullscreenSlider = () => {
     return dot;
   });
 
-  // числовой указатель «текущий / всего» — привязан к вьюеру, рядом с точками
   const counter = document.createElement("div");
   counter.className = "slider-counter";
   counter.setAttribute("aria-hidden", "true");
@@ -623,7 +581,6 @@ const fullscreenSlider = () => {
       dot.classList.toggle("active", i === currentIndex),
     );
     counter.textContent = `${currentIndex + 1} / ${slides.length}`;
-    // сообщаем зуму, что слайд сменился — нужно сбросить масштаб
     imagesList.dispatchEvent(new CustomEvent("slidechange"));
   };
 
@@ -633,7 +590,6 @@ const fullscreenSlider = () => {
     container.classList.add("fullscreen");
     document.body.style.overflow = "hidden";
     setActive(index);
-    // показать стрелки при входе (sliderZoom спрячет их через 1с)
     imagesList.dispatchEvent(new CustomEvent("fsenter"));
   };
 
@@ -645,7 +601,6 @@ const fullscreenSlider = () => {
 
   slides.forEach((li, i) => {
     li.addEventListener("click", () => {
-      // открываем fullscreen только из обычного режима
       if (!isFullscreen()) enterFullscreen(i);
     });
   });
@@ -654,11 +609,9 @@ const fullscreenSlider = () => {
   nextBtn?.addEventListener("click", () => setActive(currentIndex + 1));
   exitBtn.addEventListener("click", exitFullscreen);
 
-  // листание свайпом (события шлёт sliderZoom, когда scale === 1)
   imagesList.addEventListener("slideprev", () => setActive(currentIndex - 1));
   imagesList.addEventListener("slidenext", () => setActive(currentIndex + 1));
 
-  // управление с клавиатуры в fullscreen
   document.addEventListener("keydown", (e) => {
     if (!isFullscreen()) return;
     if (e.key === "Escape") exitFullscreen();
@@ -676,17 +629,15 @@ const initMenu = () => {
   const openFilters = document.getElementById("open-filters");
   const closeFilters = document.getElementById("close-filters");
 
-  // меню есть только на странице со списком проектов
-  if (!openSidebar || !openFilters) return;
+  if (!openSidebar || !sidebar) return;
 
   const headerCompareBtn = document.getElementById("header-compare-btn");
 
-  // скрываем кнопку сравнения в шапке, пока открыто меню или фильтры
   const syncHeaderCompareBtn = () => {
     if (!headerCompareBtn) return;
     const isOverlayOpen =
       sidebar.classList.contains("active") ||
-      filters.classList.contains("active");
+      (filters && filters.classList.contains("active"));
     headerCompareBtn.classList.toggle("hidden", isOverlayOpen);
   };
 
@@ -715,17 +666,19 @@ const initMenu = () => {
     syncHeaderCompareBtn();
   });
 
-  closeSidebar.addEventListener("click", closeSidebarMenu);
+  closeSidebar?.addEventListener("click", closeSidebarMenu);
 
-  openFilters.addEventListener("click", () => {
-    closeSidebarMenu();
-    openFilters.classList.add("active");
-    filters.classList.add("active");
-    document.body.classList.add("noscroll");
-    syncHeaderCompareBtn();
-  });
+  if (openFilters && filters) {
+    openFilters.addEventListener("click", () => {
+      closeSidebarMenu();
+      openFilters.classList.add("active");
+      filters.classList.add("active");
+      document.body.classList.add("noscroll");
+      syncHeaderCompareBtn();
+    });
 
-  closeFilters.addEventListener("click", closeFiltersMenu);
+    closeFilters?.addEventListener("click", closeFiltersMenu);
+  }
 };
 
 const serviceToggle = () => {
@@ -742,14 +695,12 @@ const serviceToggle = () => {
   });
 };
 
-// подсветка активного подпункта меню «Услуги» по секции в зоне видимости
 const serviceNav = () => {
   const links = Array.from(
     document.querySelectorAll(".sidebar-nav-internal-list a"),
   );
   if (!links.length) return;
 
-  // ссылка ↔ секция (только валидные якоря вида #service-…)
   const pairs = [];
   links.forEach((link) => {
     const hash = link.getAttribute("href");
@@ -763,7 +714,6 @@ const serviceNav = () => {
     links.forEach((l) => l.classList.toggle("active", l === link));
   };
 
-  // клик — плавный скролл к секции и сразу подсветка, не дожидаясь observer
   pairs.forEach(({ link, section }) =>
     link.addEventListener("click", (e) => {
       e.preventDefault();
@@ -780,11 +730,9 @@ const serviceNav = () => {
         if (e.isIntersecting) visible.add(e.target);
         else visible.delete(e.target);
       });
-      // берём самую верхнюю по порядку секцию, попавшую в полосу у верха экрана
       const current = pairs.find(({ section }) => visible.has(section));
       if (current) setActive(current.link);
     },
-    // тонкая полоса на ~18% высоты экрана — секция, пересекающая её, считается активной
     { rootMargin: "-15% 0px -80% 0px", threshold: 0 },
   );
 

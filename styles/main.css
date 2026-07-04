@@ -50,15 +50,11 @@ ol {
   --color-pink: #ffadb2;
 }
 
-/* ===== Скроллбар страницы =====
-   бегунок и кнопки — var(--color-dark) (rgb 44,46,53), подложка — серый body */
-/* Firefox (кнопок не поддерживает) */
 html {
   scrollbar-width: thin;
   scrollbar-color: var(--color-dark) #c8c8c8;
 }
 
-/* Chrome, Safari, Edge */
 html::-webkit-scrollbar {
   width: 5.6px;
   height: 5.6px;
@@ -73,9 +69,6 @@ html::-webkit-scrollbar-thumb {
   border-radius: 2.8px;
 }
 
-/* кнопки со стрелками — тёмный треугольник на сером, по одной с каждого конца.
-   Нужен именно :single-button, иначе webkit одиночные кнопки не рисует.
-   (Safari и Firefox кнопки скроллбара не поддерживают.) */
 html::-webkit-scrollbar-button {
   display: none;
 }

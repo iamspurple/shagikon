@@ -213,9 +213,6 @@ body.noscroll {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-bottom: clamp(96px, 12.5vw, 320px);
-  /* рамки целиком на карточках; контейнер не имеет границ, поэтому ничего
-     не «торчит» над пустыми колонками (короткий список / режим сравнения).
-     padding компенсирует отрицательные margin первого ряда и колонки. */
   padding-top: var(--card-border-width);
   padding-left: var(--card-border-width);
 }
@@ -231,8 +228,6 @@ body.noscroll {
 .projects-item {
   position: relative;
   border: var(--card-border);
-  /* соседние рамки накладываются друг на друга → линия остаётся в один
-     border-width, а не складывается вдвое */
   margin-top: calc(-1 * var(--card-border-width));
   margin-left: calc(-1 * var(--card-border-width));
   transition: all 0.3s ease;
@@ -436,9 +431,6 @@ body.noscroll {
   border: none;
 }
 
-/* активный диапазон — хотя бы одно значение сдвинуто от крайнего:
-   лейбл как у выбранных фильтров (чёрный, жирный, подчёркнутый),
-   линия и точки тоже чёрные */
 .range.active .range-label {
   color: black;
   font-weight: bold;
@@ -582,8 +574,6 @@ body.noscroll {
   .sidebar {
     position: fixed;
     width: 100%;
-    /* dvh — динамический вьюпорт: высота учитывает адресную строку Safari,
-       поэтому низ доступен и скролл работает в т.ч. в альбоме */
     height: calc(100dvh - clamp(88.93px, 15.333vw, 117.76px));
     padding: 0;
     top: clamp(88.93px, 15.333vw, 117.76px);
@@ -597,8 +587,6 @@ body.noscroll {
     padding-bottom: clamp(23.2px, 4vw, 30.72px);
   }
 
-  /* центрируем контент через margin: auto — при переполнении margin
-     схлопывается в 0, поэтому верх не обрезается и скроллится до конца */
   .sidebar.active .sidebar-content {
     margin-block: auto;
   }

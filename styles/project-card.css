@@ -39,7 +39,6 @@ body {
   scrollbar-gutter: stable;
 }
 
-/* Chrome, Safari, Edge */
 .sidebar::-webkit-scrollbar {
   width: 5.6px;
 }
@@ -242,8 +241,6 @@ body {
   margin-top: clamp(25.8px, 3.359vw, 86px);
 }
 
-/* ===== Полноэкранный слайдер ===== */
-
 .slider-arrow,
 .slider-dots {
   display: none;
@@ -287,7 +284,6 @@ body {
   width: 100%;
 }
 
-/* слайды */
 .container.fullscreen .images-list {
   height: 100%;
   justify-content: center;
@@ -331,7 +327,6 @@ body {
   object-fit: contain;
 }
 
-/* стрелки */
 .container.fullscreen .slider-arrow {
   display: flex;
   align-items: center;
@@ -360,7 +355,6 @@ body {
   height: auto;
 }
 
-/* точки */
 .container.fullscreen .slider-dots {
   display: flex;
   gap: clamp(9px, 1.2vw, 30px);
@@ -483,7 +477,6 @@ body {
   height: auto;
 }
 
-/* трек — без gap, карточки впритык */
 .related-list {
   display: flex;
   transition: transform 0.4s ease;
