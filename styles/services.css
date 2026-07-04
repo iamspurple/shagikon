@@ -714,6 +714,10 @@ body.noscroll {
     font-size: clamp(10.24px, 3.2vw, 18.56px);
   }
 
+  .service-list-circle {
+    padding-left: 8.5vw;
+  }
+
   .footer {
     height: clamp(25.6px, 8vw, 46.6px);
   }
