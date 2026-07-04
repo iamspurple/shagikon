@@ -13,10 +13,10 @@ body {
   grid-template-columns: 3.5vw 1fr;
 }
 
-/* грид-элемент должен уметь сжиматься уже своего контента (картинки/слайдер),
-   иначе колонка 1fr раздувается и появляется горизонтальный скролл */
 .main {
   min-width: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar {
@@ -209,7 +209,6 @@ body {
   width: 100%;
 }
 
-/* переключение фото / чертежи по вкладкам (только вне fullscreen) */
 .container:not(.fullscreen) .images-list.view-plan li.photo {
   display: none;
 }
@@ -239,14 +238,12 @@ body {
   cursor: zoom-in;
 }
 
-/* десктоп: отступ сверху у первого ФОТО вне fullscreen (чертежи не трогаем) */
 .container:not(.fullscreen) .images-list li.photo:not(.photo ~ .photo) img {
   margin-top: clamp(25.8px, 3.359vw, 86px);
 }
 
 /* ===== Полноэкранный слайдер ===== */
 
-/* элементы управления видны только в fullscreen */
 .slider-arrow,
 .slider-dots {
   display: none;
@@ -258,16 +255,13 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* клипуем увеличенную (zoom) картинку, чтобы не вылезала на сайдбар */
   overflow: hidden;
 }
 
-/* связанные проекты прячем в fullscreen */
 .container.fullscreen .related {
   display: none;
 }
 
-/* сворачиваем содержимое сайдбара, оставляя кнопку выхода */
 .container.fullscreen .sidebar {
   padding: 0;
   overflow: hidden;
@@ -297,7 +291,6 @@ body {
 .container.fullscreen .images-list {
   height: 100%;
   justify-content: center;
-  /* жестами (свайп/зум/панорама) управляет JS — гасим нативные тач-действия */
   touch-action: none;
 }
 
@@ -319,13 +312,11 @@ body {
   align-items: center;
 }
 
-/* картинки слайдера: жестами управляет JS (свой pinch-zoom) */
 .container.fullscreen .images-list li img {
   touch-action: none;
   transform-origin: center center;
 }
 
-/* чертёж — на всю ширину, фото — по высоте */
 .container.fullscreen .images-list li.plan img {
   width: 100%;
   max-height: 100dvh;
@@ -393,7 +384,6 @@ body {
   background: var(--color-dark);
 }
 
-/* числовой указатель «текущий / всего» — только в fullscreen, над точками */
 .slider-counter {
   display: none;
 }
@@ -411,15 +401,12 @@ body {
   z-index: 10;
 }
 
-/* при увеличении картинки управление прячем, чтобы не перекрывало */
 .container.fullscreen.is-zoomed .slider-counter,
 .container.fullscreen.is-zoomed .slider-dots,
 .container.fullscreen.is-zoomed .slider-arrow {
   display: none;
 }
 
-/* только на тач-устройствах (без hover) стрелки листания появляются по касанию
-   (.controls-visible); на десктопе (есть мышь/hover) они видны всегда */
 @media (hover: none) and (pointer: coarse) {
   .container.fullscreen .slider-arrow {
     opacity: 0;
@@ -432,16 +419,11 @@ body {
   }
 }
 
-/* iOS Safari игнорирует user-scalable=no, поэтому быстрые тапы по кнопкам
-   управления он принимает за double-tap-zoom. manipulation оставляет тап,
-   но отключает нативный двойной тап-зум. */
 .container.fullscreen .slider-arrow,
 .container.fullscreen .slider-dot,
 .container.fullscreen .sidebar-exit {
   touch-action: manipulation;
 }
-
-/* ===== Связанные проекты (слайдер) ===== */
 
 .related {
   padding-top: clamp(6px, 0.781vw, 20px);
@@ -449,14 +431,9 @@ body {
   padding-bottom: clamp(48px, 6.25vw, 160px);
 }
 
-/* вьюпорт без паддинга — обрезает ровно по краю, без «проглядывания» 4-й карточки.
-   Левую границу рамки держим здесь: вьюпорт не двигается при прокрутке,
-   поэтому слева линия видна всегда (а не только у первой карточки) */
 .related-viewport {
   overflow: hidden;
   border-left: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
-  /* горизонтальный жест перехватывает свайп слайдера, вертикальный —
-     скроллит страницу; выделение/перетаскивание картинок отключаем */
   touch-action: pan-y;
   user-select: none;
 }
@@ -512,13 +489,10 @@ body {
   transition: transform 0.4s ease;
 }
 
-/* десктоп — 3 карточки */
 .related-list li {
   flex: 0 0 calc(100% / 3);
 }
 
-/* карточка (как в projects): схлопнутые границы — у каждой только верх/право/низ,
-   левую линию рисует вьюпорт, чтобы на стыках не было двойной границы */
 .related-list .projects-item {
   position: relative;
   width: 100%;
@@ -590,7 +564,17 @@ body {
   }
 }
 
-/* планшет — 2 карточки (vw от ширины экрана, макет 750, диапазон 580–768) */
+.up-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: clamp(12.8px, 1.667vw, 42.67px);
+  font-weight: 700;
+  align-self: center;
+  width: fit-content;
+  margin: 0 auto;
+}
+
 @media screen and (max-width: 768px) {
   .related-list li {
     flex-basis: calc(100% / 2);
@@ -615,7 +599,6 @@ body {
   }
 }
 
-/* мобильный — 1 карточка (vw от ширины экрана, макет 375, диапазон 320–580) */
 @media screen and (max-width: 580px) {
   .related-list li {
     flex-basis: 100%;
@@ -640,10 +623,11 @@ body {
   }
 }
 
-/* ===== Сайдбар — адаптив (TODO: вписать px, затем clamp) ===== */
-
-/* планшет (vw от ширины экрана, макет 750, диапазон 580–768) */
 @media screen and (max-width: 768px) {
+  .up-btn {
+    display: none;
+  }
+
   .sidebar {
     gap: clamp(15.47px, 2.667vw, 20.48px);
     padding-block: clamp(27.07px, 4.667vw, 35.84px);
@@ -672,7 +656,6 @@ body {
     font-size: clamp(18.56px, 3.2vw, 24.58px);
   }
 
-  /* отступ сверху у раздела связанных проектов — планшет (макет 750 = 24px) */
   .related {
     padding-top: clamp(18.56px, 3.2vw, 24.58px);
   }
@@ -722,10 +705,38 @@ body {
   .project-view-tab {
     font-size: clamp(11.6px, 2vw, 15.36px);
   }
+
+  .footer {
+    height: clamp(19.3px, 3.33vw, 25.6px);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 200;
+  }
+
+  .footer-copyright {
+    display: none;
+  }
+
+  .footer-contacts {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0;
+    font-size: clamp(8.5px, 1.46vw, 11.3px);
+    line-height: 1em;
+  }
+
+  .footer-contacts img {
+    width: clamp(31px, 5.3vw, 42px);
+    height: clamp(10px, 1.73vw, 13.5px);
+  }
 }
 
-/* мобильный (vw от ширины экрана, макет 375, диапазон 320–580) */
 @media screen and (max-width: 580px) {
+  body {
+    padding-bottom: clamp(25.6px, 8vw, 46.6px);
+  }
+
   .sidebar {
     gap: clamp(17.07px, 5.333vw, 30.93px);
     padding-block: clamp(10.24px, 3.2vw, 18.56px);
@@ -830,8 +841,6 @@ body {
     font-size: clamp(12.8px, 4vw, 23.2px);
   }
 
-  /* слайдер связанных проектов: небольшой отступ сверху, заголовок прячем,
-     контролы — на всю ширину */
   .related {
     padding-top: clamp(27.31px, 8.533vw, 49.49px);
   }
@@ -845,14 +854,25 @@ body {
     justify-content: space-between;
   }
 
-  /* кнопки слайдера связанных проектов — макет 375 = 12px */
   .related-slider-btn {
     font-size: clamp(10.24px, 3.2vw, 18.56px);
   }
 
-  /* стрелка в кнопке — макет 375 = 9px */
   .related-slider-btn svg {
     width: clamp(7.68px, 2.4vw, 13.92px);
+  }
+
+  .footer {
+    height: clamp(25.6px, 8vw, 46.6px);
+  }
+
+  .footer-contacts {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  .footer-social img {
+    width: clamp(34px, 10.67vw, 62px);
+    height: auto;
   }
 }
 
@@ -870,17 +890,14 @@ body {
     max-width: 85%;
   }
 
-  /* отступ сверху у первого ФОТО — планшет */
   .container:not(.fullscreen) .images-list li.photo:not(.photo ~ .photo) img {
     margin-top: clamp(21.65px, 3.733vw, 28.67px);
   }
 
-  /* стрелки и точки крупнее — только планшет/мобайл (десктоп остаётся прежним) */
   .slider-arrow img {
     width: clamp(18px, 3.2vw, 40px);
   }
 
-  /* 30 точек крупными не влезают — мельче и на всю ширину с равным интервалом */
   .container.fullscreen .slider-dots {
     left: 10%;
     right: 10%;
@@ -893,29 +910,21 @@ body {
     flex-shrink: 0;
   }
 
-  /* счётчик крупнее, чем базовый минимум */
   .container.fullscreen .slider-counter {
     font-size: 18px;
   }
 }
 
-/* одноколоночная раскладка обычной (не-fullscreen) мобильной страницы */
 @media screen and (max-width: 580px) {
   .container {
     grid-template-columns: 1fr;
   }
 
-  /* отступ сверху у первого ФОТО — мобилка */
   .container:not(.fullscreen) .images-list li.photo:not(.photo ~ .photo) img {
     margin-top: clamp(10.24px, 3.2vw, 18.56px);
   }
 }
 
-/* ===== Телефон: fullscreen-слайдер =====
-   Портрет и альбом должны выглядеть ТОЧЬ-В-ТОЧЬ одинаково: в портрете весь
-   слайдер целиком повёрнут на 90°, как будто телефон перевели в альбом.
-   Ловим обе ориентации телефона (короткая сторона ≤580), вьюер — полноэкранный
-   оверлей, а размеры управления — ФИКСИРОВАННЫЕ (не зависят от vw/ориентации). */
 @media (pointer: coarse) and (max-width: 580px),
   (pointer: coarse) and (max-height: 580px) {
   .container.fullscreen .main-content {
@@ -927,14 +936,9 @@ body {
     z-index: 1000;
     background-color: #c8c8c8;
     overflow: hidden;
-    /* полоса × (в альбоме слева, 40px) не входит в область картинки:
-       flex-центрирование считается по content-box, поэтому картинка встаёт
-       по центру свободной зоны. Абсолютные контролы отсчитываются от
-       padding-box (внешнего края), поэтому их padding не сдвигает. */
     padding-left: 40px;
   }
 
-  /* картинка заполняет вьюер (а не vh), чтобы крутиться вместе с ним */
   .container.fullscreen .images-list li.plan img {
     width: 100%;
     height: 100%;
@@ -950,7 +954,6 @@ body {
     padding-top: 2%;
   }
 
-  /* фикс. размеры управления — одинаковы в портрете и альбоме */
   .container.fullscreen .slider-arrow {
     padding: 12px;
   }
@@ -963,7 +966,6 @@ body {
   .container.fullscreen .slider-next {
     right: 16px;
   }
-  /* точки на всю ширину с равномерным интервалом (right задаёт ширину) */
   .container.fullscreen .slider-dots {
     bottom: 24px;
     left: 52px;
@@ -971,20 +973,17 @@ body {
     gap: 0;
     justify-content: space-between;
   }
-  /* мельче, чтобы максимум (30) точек влезал по ширине телефона (320–580) */
   .container.fullscreen .slider-dot {
     width: 6px;
     height: 6px;
     flex-shrink: 0;
   }
-  /* счётчик над точками — фикс. размер, как остальное управление на телефоне */
   .container.fullscreen .slider-counter {
     left: 52px;
     bottom: 48px;
     font-size: 16px;
   }
 
-  /* кнопка выхода — тёмная полоса слева (фикс. ширина), × в верхнем углу */
   .container.fullscreen .sidebar-exit {
     display: flex;
     align-items: flex-start;
@@ -1008,12 +1007,7 @@ body {
   }
 }
 
-/* Портрет телефона: слайдер НЕ поворачиваем — картинка, стрелки и точки
-   показываются в естественной портретной ориентации. Полоса × остаётся
-   сверху (sidebar — в том же виде, что и в альбоме). */
 @media (orientation: portrait) and (max-width: 580px) {
-  /* нет левой тёмной полосы — стрелка «назад» и точки выравниваются по краю,
-     как и стрелка «вперёд» (16px) */
   .container.fullscreen .slider-prev {
     left: 16px;
   }
@@ -1024,13 +1018,11 @@ body {
     left: 16px;
   }
 
-  /* полоса × сверху → свободную зону поджимаем сверху, а не слева */
   .container.fullscreen .main-content {
     padding-left: 0;
     padding-top: 40px;
   }
 
-  /* полоса × — сверху, по всей ширине, та же толщина (40px); × в правом углу */
   .container.fullscreen .sidebar-exit {
     top: 0;
     left: 0;

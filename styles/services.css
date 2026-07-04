@@ -225,7 +225,6 @@ body.noscroll {
   margin-top: clamp(6.4px, 0.833vw, 21.33px);
 }
 
-/* небольшая плашка-подзаголовок (варианты «I. …», «II. …») */
 .service-subtitle-sm {
   font-family: var(--font-arial);
   font-size: clamp(7.47px, 0.95vw, 24px);
@@ -434,8 +433,6 @@ body.noscroll {
   .sidebar {
     position: fixed;
     width: 100%;
-    /* dvh — динамический вьюпорт: высота учитывает адресную строку Safari,
-       поэтому низ доступен и скролл работает в т.ч. в альбоме */
     height: calc(100dvh - clamp(88.93px, 15.333vw, 117.76px));
     padding: 0;
     top: clamp(88.93px, 15.333vw, 117.76px);
@@ -449,8 +446,6 @@ body.noscroll {
     padding-bottom: clamp(23.2px, 4vw, 30.72px);
   }
 
-  /* центрируем контент через margin: auto — при переполнении margin
-     схлопывается в 0, поэтому верх не обрезается и скроллится до конца */
   .sidebar.active .sidebar-content {
     margin-block: auto;
   }
@@ -469,6 +464,10 @@ body.noscroll {
     width: 100%;
     font-size: clamp(18.56px, 3.2vw, 24.58px);
     align-items: center;
+  }
+
+  .sidebar-nav-internal-list {
+    display: none;
   }
 
   .sidebar-search::before {
@@ -491,10 +490,96 @@ body.noscroll {
     display: none;
   }
 
+  .sidebar-close-btn {
+    display: inline-block;
+    background-color: transparent;
+    border: none;
+  }
+
+  .sidebar-close-btn {
+    align-self: flex-start;
+  }
+
+  .sidebar-close-btn img {
+    width: clamp(12.37px, 2.133vw, 16.38px);
+    height: clamp(12.37px, 2.133vw, 16.38px);
+  }
+
   .container {
     width: 100%;
     grid-template-columns: 1fr;
     padding-inline: clamp(24.75px, 4.267vw, 32.77px);
+  }
+
+  .service {
+    font-size: clamp(10.83px, 1.867vw, 14.34px);
+  }
+
+  .service + .service {
+    margin-top: clamp(24.75px, 4.267vw, 32.77px);
+  }
+
+  .service-head {
+    flex-direction: column;
+    gap: clamp(9.28px, 1.6vw, 12.29px);
+    align-items: flex-start;
+  }
+
+  .service-title {
+    font-size: clamp(13.92px, 2.4vw, 18.43px);
+    padding: clamp(9.28px, 1.6vw, 12.29px) clamp(12.37px, 2.133vw, 16.38px);
+  }
+
+  .service-toggle {
+    font-size: clamp(9.28px, 1.6vw, 12.29px);
+    margin-left: clamp(12.37px, 2.133vw, 16.38px);
+  }
+
+  .service-body {
+    gap: clamp(15.47px, 2.667vw, 20.48px);
+  }
+
+  .service-body p {
+    padding-left: clamp(12.37px, 2.133vw, 16.38px);
+  }
+
+  .service-links {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .service-link {
+    padding-block: clamp(10.83px, 1.867vw, 14.34px);
+    min-width: clamp(133.79px, 23.067vw, 177.15px);
+  }
+
+  .service-subtitle {
+    font-size: clamp(13.92px, 2.4vw, 18.43px);
+    padding: clamp(9.28px, 1.6vw, 12.29px) clamp(12.37px, 2.133vw, 16.38px);
+  }
+
+  .service-subtitle-sm {
+    font-size: clamp(11.6px, 2vw, 15.36px);
+  }
+
+  .service-images {
+    gap: 5vw;
+  }
+
+  .service-image-caption {
+    font-size: clamp(9.28px, 1.6vw, 12.29px);
+  }
+
+  .service-list {
+    padding-left: clamp(23.2px, 4vw, 30.72px);
+  }
+
+  .service-bullets-circle > li::after {
+    left: -0.5em;
+  }
+
+  .up-btn {
+    display: none;
   }
 
   .footer {
@@ -524,6 +609,10 @@ body.noscroll {
 }
 
 @media screen and (max-width: 580px) {
+  body {
+    padding-bottom: clamp(25.6px, 8vw, 46.6px);
+  }
+
   .header {
     width: fit-content;
   }
@@ -571,6 +660,58 @@ body.noscroll {
 
   .sidebar-close-btn {
     align-self: center;
+  }
+
+  .sidebar-close-btn img {
+    width: clamp(8.53px, 2.667vw, 15.47px);
+    height: clamp(8.53px, 2.667vw, 15.47px);
+  }
+
+  .service {
+    font-size: clamp(11.95px, 3.733vw, 21.65px);
+  }
+
+  .service + .service {
+    margin-top: clamp(27.31px, 8.533vw, 49.49px);
+  }
+
+  .service-head {
+    gap: clamp(23.89px, 7.467vw, 43.31px);
+  }
+
+  .service-title,
+  .service-subtitle {
+    font-size: clamp(15.36px, 4.8vw, 27.84px);
+    padding: clamp(11.09px, 3.467vw, 20.11px) clamp(13.65px, 4.267vw, 24.75px);
+    border-radius: clamp(17.07px, 5.333vw, 30.93px);
+  }
+
+  .service-toggle {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
+  }
+
+  .service-body {
+    gap: clamp(25.6px, 8vw, 46.4px);
+  }
+
+  .service-links {
+    flex-direction: column;
+    gap: clamp(11.95px, 3.733vw, 21.65px);
+    align-items: center;
+  }
+
+  .service-link {
+    padding-block: clamp(11.95px, 3.733vw, 21.65px);
+    width: clamp(147.63px, 46.133vw, 267.59px);
+  }
+
+  .service-images {
+    grid-template-columns: 1fr;
+    gap: clamp(25.6px, 8vw, 46.4px);
+  }
+
+  .service-image-caption {
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
   }
 
   .footer {

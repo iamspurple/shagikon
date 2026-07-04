@@ -61,9 +61,7 @@ const compare = () => {
 
 const roomTypeFilter = () => {
   const all = document.getElementById("all");
-  const types = document.querySelectorAll(
-    'input[name="roomtype"]:not(#all)'
-  );
+  const types = document.querySelectorAll('input[name="roomtype"]:not(#all)');
 
   if (!all || !types.length) return;
 
@@ -74,7 +72,7 @@ const roomTypeFilter = () => {
     Array.from(rangeInputs).some((input) =>
       input.classList.contains("range-input-min")
         ? +input.value > +input.min
-        : +input.value < +input.max
+        : +input.value < +input.max,
     );
 
   // "все" отмечен ⟺ фильтр не применён: ни категорий, ни диапазонов
@@ -283,7 +281,7 @@ const relatedSlider = () => {
   viewport.addEventListener("pointerdown", onDown);
   viewport.addEventListener("pointermove", onMove);
   ["pointerup", "pointercancel"].forEach((type) =>
-    viewport.addEventListener(type, onUp)
+    viewport.addEventListener(type, onUp),
   );
 
   // после свайпа гасим клик по карточке-ссылке, чтобы не было перехода
@@ -296,7 +294,7 @@ const relatedSlider = () => {
         moved = false;
       }
     },
-    true
+    true,
   );
 
   window.addEventListener("resize", update);
@@ -347,16 +345,20 @@ const sliderZoom = () => {
   const toLocal = (dx, dy) => ({ x: dx, y: dy });
 
   const points = () => [...pointers.values()];
-  const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+  const dist = (a, b) =>
+    Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
 
   // не даём утащить увеличенную картинку за пределы (в серую пустоту)
   const clampPan = () => {
     const img = activeImg();
     if (!img) return;
-    const maxX = Math.max(0, (img.offsetWidth * scale - viewer.clientWidth) / 2);
+    const maxX = Math.max(
+      0,
+      (img.offsetWidth * scale - viewer.clientWidth) / 2,
+    );
     const maxY = Math.max(
       0,
-      (img.offsetHeight * scale - viewer.clientHeight) / 2
+      (img.offsetHeight * scale - viewer.clientHeight) / 2,
     );
     tx = clamp(tx, -maxX, maxX);
     ty = clamp(ty, -maxY, maxY);
@@ -364,7 +366,8 @@ const sliderZoom = () => {
 
   const apply = () => {
     const img = activeImg();
-    if (img) img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+    if (img)
+      img.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
     // при увеличении прячем элементы управления (счётчик/точки/стрелки)
     container.classList.toggle("is-zoomed", scale > 1);
   };
@@ -390,7 +393,7 @@ const sliderZoom = () => {
     if (visible && autoHide) {
       controlsTimer = setTimeout(
         () => container.classList.remove("controls-visible"),
-        1000
+        1000,
       );
     }
   };
@@ -547,7 +550,7 @@ const sliderZoom = () => {
     ) {
       // свайп листает, только когда не увеличено
       imagesList.dispatchEvent(
-        new CustomEvent(dx < 0 ? "slidenext" : "slideprev")
+        new CustomEvent(dx < 0 ? "slidenext" : "slideprev"),
       );
     }
 
@@ -562,7 +565,7 @@ const sliderZoom = () => {
   imagesList.addEventListener("pointerdown", onDown);
   imagesList.addEventListener("pointermove", onMove, { passive: false });
   ["pointerup", "pointercancel"].forEach((type) =>
-    imagesList.addEventListener(type, onUp)
+    imagesList.addEventListener(type, onUp),
   );
 
   // сброс масштаба при смене слайда / выходе из fullscreen
@@ -573,7 +576,7 @@ const sliderZoom = () => {
 
   // блокируем нативный зум страницы на iOS Safari (жесты pinch)
   ["gesturestart", "gesturechange", "gestureend"].forEach((type) =>
-    document.addEventListener(type, (e) => e.preventDefault())
+    document.addEventListener(type, (e) => e.preventDefault()),
   );
 };
 
@@ -608,15 +611,17 @@ const fullscreenSlider = () => {
   counter.className = "slider-counter";
   counter.setAttribute("aria-hidden", "true");
   (imagesList.closest(".main-content") || imagesList.parentElement).appendChild(
-    counter
+    counter,
   );
 
   const setActive = (index) => {
     currentIndex = (index + slides.length) % slides.length;
     slides.forEach((li, i) =>
-      li.classList.toggle("active", i === currentIndex)
+      li.classList.toggle("active", i === currentIndex),
     );
-    dots.forEach((dot, i) => dot.classList.toggle("active", i === currentIndex));
+    dots.forEach((dot, i) =>
+      dot.classList.toggle("active", i === currentIndex),
+    );
     counter.textContent = `${currentIndex + 1} / ${slides.length}`;
     // сообщаем зуму, что слайд сменился — нужно сбросить масштаб
     imagesList.dispatchEvent(new CustomEvent("slidechange"));
@@ -686,6 +691,8 @@ const initMenu = () => {
   };
 
   const closeSidebarMenu = () => {
+    if (!openSidebar || !sidebar) return;
+
     openSidebar.classList.remove("active");
     sidebar.classList.remove("active");
     document.body.classList.remove("noscroll");
@@ -693,6 +700,7 @@ const initMenu = () => {
   };
 
   const closeFiltersMenu = () => {
+    if (!openFilters || !filters) return;
     openFilters.classList.remove("active");
     filters.classList.remove("active");
     document.body.classList.remove("noscroll");
@@ -737,7 +745,7 @@ const serviceToggle = () => {
 // подсветка активного подпункта меню «Услуги» по секции в зоне видимости
 const serviceNav = () => {
   const links = Array.from(
-    document.querySelectorAll(".sidebar-nav-internal-list a")
+    document.querySelectorAll(".sidebar-nav-internal-list a"),
   );
   if (!links.length) return;
 
@@ -762,7 +770,7 @@ const serviceNav = () => {
       setActive(link);
       section.scrollIntoView({ behavior: "smooth", block: "start" });
       history.replaceState(null, "", link.getAttribute("href"));
-    })
+    }),
   );
 
   const visible = new Set();
@@ -777,7 +785,7 @@ const serviceNav = () => {
       if (current) setActive(current.link);
     },
     // тонкая полоса на ~18% высоты экрана — секция, пересекающая её, считается активной
-    { rootMargin: "-15% 0px -80% 0px", threshold: 0 }
+    { rootMargin: "-15% 0px -80% 0px", threshold: 0 },
   );
 
   pairs.forEach(({ section }) => observer.observe(section));

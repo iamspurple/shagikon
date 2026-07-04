@@ -511,6 +511,7 @@ body.noscroll {
     align-items: center;
     gap: clamp(30.93px, 5.333vw, 40.96px);
     padding-top: clamp(18.56px, 3.2vw, 24.58px);
+    padding-bottom: clamp(19.3px, 3.33vw, 25.6px);
   }
 
   .header {
@@ -807,6 +808,10 @@ body.noscroll {
     font-size: clamp(7.73px, 1.33vw, 10.33px);
   }
 
+  .up-btn {
+    display: none;
+  }
+
   .footer {
     height: clamp(19.3px, 3.33vw, 25.6px);
     position: fixed;
@@ -834,6 +839,10 @@ body.noscroll {
 }
 
 @media screen and (max-width: 580px) {
+  body {
+    padding-bottom: clamp(25.6px, 8vw, 46.6px);
+  }
+
   .header {
     width: fit-content;
   }
