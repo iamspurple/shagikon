@@ -259,6 +259,11 @@ body {
   display: none;
 }
 
+.container.fullscreen .up-btn,
+.container.fullscreen ~ .footer {
+  display: none;
+}
+
 .container.fullscreen .sidebar {
   padding: 0;
   overflow: hidden;
