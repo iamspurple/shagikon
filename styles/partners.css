@@ -27,6 +27,7 @@ body.noscroll {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: clamp(38px, 4.95vw, 126.72px);
+  margin-bottom: 10vw;
 }
 
 .sidebar {
@@ -132,7 +133,6 @@ body.noscroll {
   justify-content: center;
   gap: 3em;
   padding-right: clamp(19.2px, 2.5vw, 64px);
-  margin-bottom: 10vw;
   font-size: clamp(6.4px, 0.833vw, 21.33px);
   line-height: 140%;
 }
