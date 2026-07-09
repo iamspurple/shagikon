@@ -72,9 +72,20 @@ body.noscroll {
   font-weight: bold;
 }
 
-.sidebar-nav-list li a.active {
+.sidebar-nav-list li a {
   display: inline-block;
-  border-bottom: clamp(0.53px, 0.069vw, 1.78px) solid black;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s ease;
+}
+
+.sidebar-nav-list li a.active {
+  border-color: black;
+}
+
+@media (hover: hover) {
+  .sidebar-nav-list li a:hover {
+    border-color: black;
+  }
 }
 
 .sidebar-search {
@@ -413,6 +424,7 @@ body.noscroll {
   }
 
   .main {
+    padding-inline: 1.5%;
     font-size: clamp(10.24px, 3.2vw, 18.56px);
   }
 

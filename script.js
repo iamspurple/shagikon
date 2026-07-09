@@ -697,7 +697,7 @@ const serviceToggle = () => {
 
 const serviceNav = () => {
   const links = Array.from(
-    document.querySelectorAll(".sidebar-nav-internal-list a"),
+    document.querySelectorAll(".sidebar-nav-inner-list a"),
   );
   if (!links.length) return;
 

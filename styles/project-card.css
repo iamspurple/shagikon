@@ -90,7 +90,7 @@ body {
 }
 
 .project-subtitle {
-  font-size: clamp(5.33px, 0.694vw, 17.78px);
+  font-size: clamp(6.6px, 0.86vw, 22px);
   font-weight: bold;
   line-height: 190%;
   text-decoration: underline;
@@ -103,13 +103,13 @@ body {
 }
 
 .project-composition-title {
-  font-size: clamp(4.27px, 0.556vw, 14.22px);
+  font-size: clamp(5.33px, 0.694vw, 17.78px);
   font-weight: bold;
   line-height: 150%;
 }
 
 .project-composition p {
-  font-size: clamp(4.27px, 0.556vw, 14.22px);
+  font-size: clamp(5.33px, 0.694vw, 17.78px);
   font-weight: 400;
   line-height: 150%;
 }
@@ -228,6 +228,7 @@ body {
 
 .images-list li.photo img {
   width: 80%;
+  max-height: 86vh;
   height: auto;
   object-fit: contain;
   margin-bottom: clamp(54px, 7.031vw, 180px);
@@ -286,7 +287,8 @@ body {
 }
 
 .container.fullscreen .sidebar-exit svg {
-  width: 100%;
+  width: max(25%, 12px);
+  height: 100%;
 }
 
 .container.fullscreen .images-list {
@@ -534,7 +536,7 @@ body {
 .related-list .projects-item-info-wrapper {
   background-color: rgb(45, 44, 44);
   color: var(--color-light);
-  padding-left: clamp(5.33px, 0.694vw, 17.78px);
+  padding-inline: clamp(5.33px, 0.694vw, 17.78px);
   padding-top: clamp(3.88px, 0.5vw, 12.8px);
   height: clamp(23.04px, 3vw, 76.8px);
 }
@@ -542,7 +544,7 @@ body {
 .related-list .projects-item-info {
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 100%;
   font-family: var(--font-calibri);
   font-weight: bold;
   font-size: clamp(6.4px, 0.833vw, 21.33px);
@@ -659,15 +661,15 @@ body {
   }
 
   .project-subtitle {
-    font-size: clamp(7.73px, 1.333vw, 10.24px);
+    font-size: clamp(9.28px, 1.6vw, 13px);
   }
 
   .project-composition-title {
-    font-size: clamp(6.19px, 1.067vw, 8.19px);
+    font-size: clamp(7.73px, 1.333vw, 10.24px);
   }
 
   .project-composition p {
-    font-size: clamp(6.19px, 1.067vw, 8.19px);
+    font-size: clamp(7.73px, 1.333vw, 10.24px);
   }
 
   .project-description {
@@ -785,16 +787,16 @@ body {
   }
 
   .project-subtitle {
-    font-size: clamp(8.53px, 2.667vw, 15.47px);
+    font-size: clamp(10.24px, 3.2vw, 18.56px);
     max-width: 50%;
   }
 
   .project-composition-title {
-    font-size: clamp(6.83px, 2.133vw, 12.37px);
+    font-size: clamp(8.53px, 2.667vw, 15.47px);
   }
 
   .project-composition p {
-    font-size: clamp(6.83px, 2.133vw, 12.37px);
+    font-size: clamp(8.53px, 2.667vw, 15.47px);
   }
 
   .project-description {

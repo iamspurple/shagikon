@@ -71,9 +71,20 @@ body.noscroll {
   font-weight: bold;
 }
 
-.sidebar-nav-list li a.active {
+.sidebar-nav-list li a {
   display: inline-block;
-  border-bottom: clamp(0.53px, 0.069vw, 1.78px) solid black;
+  border-bottom: 2px solid transparent;
+  transition: 0.2s ease;
+}
+
+.sidebar-nav-list li a.active {
+  border-color: black;
+}
+
+@media (hover: hover) {
+  .sidebar-nav-list li a:hover {
+    border-color: black;
+  }
 }
 
 .sidebar-search {
@@ -238,7 +249,7 @@ body.noscroll {
   top: 2%;
   left: 2%;
   z-index: 20;
-  border: clamp(1.6px, 0.208vw, 5.33px) solid #42454a;
+  border: var(--card-border-width) solid rgb(45, 44, 44);
   outline: none;
   width: clamp(6.93px, 0.903vw, 23.11px);
   height: clamp(6.93px, 0.903vw, 23.11px);
@@ -251,7 +262,7 @@ body.noscroll {
   display: inline-block;
   font-size: clamp(16px, 1.5vw, 40px);
   line-height: 1em;
-  color: #42454a;
+  color: rgb(45, 44, 44);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -294,7 +305,7 @@ body.noscroll {
 .projects-item-info-wrapper {
   background-color: rgb(45, 44, 44);
   color: var(--color-light);
-  padding-left: clamp(5.33px, 0.694vw, 17.78px);
+  padding-inline: clamp(5.33px, 0.694vw, 17.78px);
   padding-top: clamp(3.88px, 0.5vw, 12.8px);
   height: clamp(23.04px, 3vw, 76.8px);
 }
@@ -302,7 +313,7 @@ body.noscroll {
 .projects-item-info {
   display: flex;
   flex-direction: column;
-  width: fit-content;
+  width: 100%;
   font-family: var(--font-calibri);
   font-weight: bold;
   font-size: clamp(6.4px, 0.833vw, 21.33px);
