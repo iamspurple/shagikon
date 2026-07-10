@@ -493,9 +493,19 @@ body {
   flex: 0 0 calc(100% / 3);
 }
 
+.related-list .projects-item-link,
+.related-list .projects-item-link article {
+  display: block;
+  height: 100%;
+}
+
 .related-list .projects-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
   width: 100%;
+
   border: clamp(1.07px, 0.139vw, 3.56px) solid rgb(45, 44, 44);
   border-left: none;
 }
@@ -537,14 +547,16 @@ body {
   background-color: rgb(45, 44, 44);
   color: var(--color-light);
   padding-inline: clamp(5.33px, 0.694vw, 17.78px);
-  padding-top: clamp(3.88px, 0.5vw, 12.8px);
-  height: clamp(23.04px, 3vw, 76.8px);
+  padding-block: clamp(3.88px, 0.5vw, 12.8px);
+  flex-grow: 1;
 }
 
 .related-list .projects-item-info {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 100%;
+  height: 100%;
   font-family: var(--font-calibri);
   font-weight: bold;
   font-size: clamp(6.4px, 0.833vw, 21.33px);
@@ -586,7 +598,6 @@ body {
 
   .related-list .projects-item-info-wrapper {
     padding: clamp(6.19px, 1.067vw, 8.19px);
-    height: clamp(23.2px, 4vw, 30.72px);
   }
 
   .related-list .projects-item-info {
@@ -609,9 +620,7 @@ body {
   }
 
   .related-list .projects-item-info-wrapper {
-    min-height: clamp(35.84px, 11.2vw, 64.96px);
     padding: clamp(6.83px, 2.133vw, 12.37px);
-    height: auto;
   }
 
   .related-list .projects-item-info {

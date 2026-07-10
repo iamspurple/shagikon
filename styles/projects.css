@@ -228,6 +228,12 @@ body.noscroll {
   padding-left: var(--card-border-width);
 }
 
+.projects-item-link,
+.projects-item-link article {
+  display: block;
+  height: 100%;
+}
+
 .projects.compare-mode li {
   display: none;
 }
@@ -237,6 +243,9 @@ body.noscroll {
 }
 
 .projects-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   position: relative;
   border: var(--card-border);
   margin-top: calc(-1 * var(--card-border-width));
@@ -306,14 +315,16 @@ body.noscroll {
   background-color: rgb(45, 44, 44);
   color: var(--color-light);
   padding-inline: clamp(5.33px, 0.694vw, 17.78px);
-  padding-top: clamp(3.88px, 0.5vw, 12.8px);
-  height: clamp(23.04px, 3vw, 76.8px);
+  padding-block: clamp(3.88px, 0.5vw, 12.8px);
+  flex-grow: 1;
 }
 
 .projects-item-info {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   width: 100%;
+  height: 100%;
   font-family: var(--font-calibri);
   font-weight: bold;
   font-size: clamp(6.4px, 0.833vw, 21.33px);
@@ -795,7 +806,6 @@ body.noscroll {
 
   .projects-item-info-wrapper {
     padding: clamp(7.73px, 1.33vw, 10.33px);
-    height: clamp(34.8px, 6vw, 46.08px);
   }
 
   .projects-item-info {
@@ -989,7 +999,6 @@ body.noscroll {
   }
 
   .projects-item-info-wrapper {
-    min-height: clamp(38.4px, 12vw, 69.6px);
     padding: clamp(6.83px, 2.133vw, 12.37px);
     height: auto;
   }
