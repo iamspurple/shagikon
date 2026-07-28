@@ -105,6 +105,11 @@ html::-webkit-scrollbar-button:single-button:vertical:increment {
   line-height: 100%;
 }
 
+.main-screen + .footer {
+  background-color: #2d2c2c;
+  color: white;
+}
+
 .footer-contacts {
   display: flex;
   align-items: center;
@@ -116,7 +121,16 @@ html::-webkit-scrollbar-button:single-button:vertical:increment {
   height: clamp(13px, 1vw, 25px);
 }
 
+.main-screen + .footer .footer-social img {
+  filter: brightness(100);
+}
+
 @media screen and (max-width: 768px) {
+  .main-screen + .footer {
+    background-color: var(--color-light);
+    color: var(--color-dark);
+  }
+
   .footer-copyright {
     display: none;
   }
@@ -124,5 +138,9 @@ html::-webkit-scrollbar-button:single-button:vertical:increment {
     width: 100%;
     justify-content: space-between;
     gap: 0;
+  }
+
+  .main-screen + .footer .footer-social img {
+    filter: none;
   }
 }
