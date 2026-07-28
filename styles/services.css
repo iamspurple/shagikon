@@ -349,6 +349,7 @@ body.noscroll {
 }
 
 .up-btn {
+  cursor: pointer;
   background: transparent;
   border: none;
   color: white;
@@ -590,7 +591,8 @@ body.noscroll {
   }
 
   .up-btn {
-    display: none;
+    font-size: 20px;
+    margin-bottom: calc(clamp(19.3px, 3.33vw, 25.6px) + 10px);
   }
 
   .footer {
