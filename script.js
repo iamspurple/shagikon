@@ -162,19 +162,28 @@ const projectViewTabs = () => {
   const photoBtn = document.getElementById("photo-btn");
   const planBtn = document.getElementById("plan-btn");
   const imagesList = document.querySelector(".images-list");
+  const main = document.querySelector(".main");
 
   if (!photoBtn || !planBtn || !imagesList) return;
 
-  const showView = (view) => {
+  const scrollToMain = () => {
+    if (!main || window.innerWidth <= 580) return;
+    const top = window.scrollY + main.getBoundingClientRect().top;
+    window.scrollTo({ top, behavior: "auto" });
+  };
+
+  const showView = (view, resetScroll = false) => {
     imagesList.classList.toggle("view-photo", view === "photo");
     imagesList.classList.toggle("view-plan", view === "plan");
 
     photoBtn.classList.toggle("active", view === "photo");
     planBtn.classList.toggle("active", view === "plan");
+
+    if (resetScroll) scrollToMain();
   };
 
-  photoBtn.addEventListener("click", () => showView("photo"));
-  planBtn.addEventListener("click", () => showView("plan"));
+  photoBtn.addEventListener("click", () => showView("photo", true));
+  planBtn.addEventListener("click", () => showView("plan", true));
 
   showView(photoBtn.classList.contains("active") ? "photo" : "plan");
 };
