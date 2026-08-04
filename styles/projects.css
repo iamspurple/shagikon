@@ -820,7 +820,6 @@ body.noscroll {
 
   .up-btn {
     font-size: 20px;
-    margin-bottom: calc(clamp(19.3px, 3.33vw, 25.6px) + 10px);
   }
 
   .footer {

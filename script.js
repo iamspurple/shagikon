@@ -162,24 +162,32 @@ const projectViewTabs = () => {
   const photoBtn = document.getElementById("photo-btn");
   const planBtn = document.getElementById("plan-btn");
   const imagesList = document.querySelector(".images-list");
-  const main = document.querySelector(".main");
 
   if (!photoBtn || !planBtn || !imagesList) return;
 
-  const scrollToMain = () => {
-    if (!main || window.innerWidth <= 580) return;
-    const top = window.scrollY + main.getBoundingClientRect().top;
-    window.scrollTo({ top, behavior: "auto" });
-  };
+  const scrollPositions = { photo: 0, plan: 0 };
+  let currentView = null;
 
-  const showView = (view, resetScroll = false) => {
+  const showView = (view, remember = false) => {
+    if (view === currentView) return;
+
+    const trackScroll = remember && window.innerWidth > 580;
+
+    if (trackScroll && currentView) {
+      scrollPositions[currentView] = window.scrollY;
+    }
+
     imagesList.classList.toggle("view-photo", view === "photo");
     imagesList.classList.toggle("view-plan", view === "plan");
 
     photoBtn.classList.toggle("active", view === "photo");
     planBtn.classList.toggle("active", view === "plan");
 
-    if (resetScroll) scrollToMain();
+    currentView = view;
+
+    if (trackScroll) {
+      window.scrollTo({ top: scrollPositions[view], behavior: "auto" });
+    }
   };
 
   photoBtn.addEventListener("click", () => showView("photo", true));
